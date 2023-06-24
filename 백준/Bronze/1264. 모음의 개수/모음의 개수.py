@@ -1,16 +1,9 @@
-res = []
 while True:
-    val = input()
-    if val == '#':
+    res = 0
+    seed = input()
+    if seed[0] == '#':
         break
-    cnt = 0
-    for i in val:
-        if i in ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']:
-            cnt += 1
-    res.append(cnt)
-for i in res: print(i)
-
-
-
-            
-    
+    for value in seed:
+        if value in list('aeiouAEIOU'):
+            res += 1
+    print(res)
