@@ -1,18 +1,12 @@
-from collections import defaultdict
-import string
+import sys
 
-lowercase = string.ascii_lowercase
-answer = [-1] * len(lowercase)
-strings = input()
-counter = defaultdict(int)
+def solution(data):
+    answer = [-1] * 26
+    for idx in range(len(data)):
+        if answer[ord(data[idx]) - 97] == -1:
+            answer[ord(data[idx]) - 97] = idx
+    for char in answer:
+        print(char, end = ' ')
 
-for idx in range(len(strings)):
-    if strings[idx] not in counter:
-        counter[strings[idx]] = idx
-
-for idx in range(len(lowercase)):
-    for hash in counter:
-        if lowercase[idx] == hash:
-            answer[idx] = counter[hash]
-
-print(*answer)
+data = sys.stdin.readline().rstrip()
+solution(data)
