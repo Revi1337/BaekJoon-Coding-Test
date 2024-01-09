@@ -6,6 +6,6 @@ def solution(s):
             answer.append(-1)
             table[s[idx]] = idx
         else:
-            answer.append(idx - table[s[idx][-1]])
+            answer.append(idx - table[s[idx]])
             table[s[idx]] = idx
     return answer
