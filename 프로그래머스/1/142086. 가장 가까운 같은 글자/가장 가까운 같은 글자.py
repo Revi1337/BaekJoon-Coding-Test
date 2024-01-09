@@ -1,7 +1,5 @@
-from collections import defaultdict
-
 def solution(s):
-    table = defaultdict(int)
+    table = {}
     answer = []
     for idx in range(len(s)):
         if not s[idx] in table:
