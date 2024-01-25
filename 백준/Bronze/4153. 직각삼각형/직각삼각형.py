@@ -1,9 +1,8 @@
 def solution(triangles):
     for triangle in triangles:
-        index = max = 0
+        max = 0
         for idx, val in enumerate(triangle):
             if val > max:
-                index = idx
                 max = val
         triangle.remove(max)
         left = triangle[0] ** 2 + triangle[1] ** 2
