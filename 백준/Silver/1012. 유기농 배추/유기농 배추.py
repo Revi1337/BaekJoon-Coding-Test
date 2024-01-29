@@ -50,9 +50,9 @@ def solution(m, n, positions):
             if field[row][col] == 1:
                 answer += 1
                 queue.append([row, col])
+                field[row][col] = 0
                 while queue:
                     node_cnt = len(queue)
-                    field[row][col] = 0
                     for _ in range(node_cnt):
                         r, c = queue.popleft()
                         for d in range(4):
