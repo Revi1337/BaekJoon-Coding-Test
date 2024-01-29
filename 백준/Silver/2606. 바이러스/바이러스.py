@@ -9,7 +9,7 @@ def solution_graph_bfs(n, edges):
     queue.append(1)
     check = [0] * (n + 1)
     check[1] = 1
-    answer = 0
+    answer = -1
     while queue:
         node_cnt = len(queue)
         answer += node_cnt
@@ -19,7 +19,7 @@ def solution_graph_bfs(n, edges):
                 if check[next_node] == 0:
                     check[next_node] = 1
                     queue.append(next_node)
-    return answer - 1
+    return answer
 
 
 def solution_graph_dfs(n, edges):
