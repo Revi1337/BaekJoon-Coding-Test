@@ -19,7 +19,6 @@ def solution(m, n, positions):
                     node_cnt = len(queue)
                     for _ in range(node_cnt):
                         r, c = queue.popleft()
-                        field[r][c] = 0
                         for d in range(4):
                             nr = r + dr[d]
                             nc = c + dc[d]
