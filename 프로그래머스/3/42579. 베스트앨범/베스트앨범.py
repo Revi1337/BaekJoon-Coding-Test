@@ -1,18 +1,13 @@
 def solution(genres, plays):
-    answer = []
-    genres_dict = {}
-    plays_dict = {}
-    for idx in range(len(genres)):
-        genre = genres[idx]
-        play = plays[idx]
-        if genre not in genres_dict:
-            genres_dict[genre] = []
-            plays_dict[genre] = 0
-        genres_dict[genre].append((idx, play))
-        plays_dict[genre] += play
+    music = {}
+    counter = {}
+    for idx, (genre, play) in enumerate(zip(genres, plays)):
+        music[genre] = music.get(genre, [])
+        music[genre].append([idx, play])
+        counter[genre] = counter.get(genre, 0) + play
 
-    sorted_genres = sorted(plays_dict.items(), key=lambda x: x[1], reverse=True)
-    for genre, _ in sorted_genres:
-        sorted_songs = sorted(genres_dict[genre], key=lambda x: (-x[1], x[0]))
-        answer.extend([idx for idx, _ in sorted_songs[:2]])
+    answer = []
+    for genre, _ in sorted(counter.items(), key=lambda x: -x[1]):
+        for index, play in sorted(music[genre], key=lambda x: -x[1])[:2]:
+            answer.append(index)
     return answer
