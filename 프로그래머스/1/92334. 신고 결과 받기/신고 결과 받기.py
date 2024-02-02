@@ -1,24 +1,17 @@
 def solution(id_list, report, k):
     reported_dict = {}
-    for content in report:
-        user_id, reported_id = content.split()
-        if reported_id not in reported_dict:
-            reported_dict[reported_id] = set()
-        reported_dict[reported_id].add(user_id)
+    for string in report:
+        report_user, reported_user = string.split()
+        reported_dict[reported_user] = reported_dict.get(reported_user, set())
+        reported_dict[reported_user].add(report_user)
 
-    reported_counter = {}
-    for _, user_ids in reported_dict.items():
-        if len(user_ids) >= k:
-            for user_id in user_ids:
-                if user_id not in reported_counter:
-                    reported_counter[user_id] = 1
-                else:
-                    reported_counter[user_id] += 1
-
-    answer = []
-    for idx in range(len(id_list)):
-        if id_list[idx] not in reported_counter:
-            answer.append(0)
-        else:
-            answer.append(reported_counter[id_list[idx]])
+    id_length = len(id_list)
+    answer = [0] * id_length
+    for reported_user in reported_dict:
+        report_users = reported_dict[reported_user]
+        if len(report_users) >= k:
+            for idx in range(id_length):
+                user_id = id_list[idx]
+                if user_id in report_users:
+                    answer[idx] += 1
     return answer
