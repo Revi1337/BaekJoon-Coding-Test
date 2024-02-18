@@ -1,12 +1,13 @@
 def solution(phone_book):
     answer = True
-    hash_map = {}
-    for phone_number in phone_book:
-        hash_map[phone_number] = 1
-    for phone_number in phone_book:
-        temp = ""
-        for number in phone_number:
-            temp += number
-            if temp in hash_map and temp != phone_number:
+    table = {}
+    for phone in phone_book:
+        table[phone] = 1
+    for phone in phone_book:
+        tmp = ''
+        for integer in phone:
+            tmp += integer
+            if tmp in table and tmp != phone:
                 answer = False
+                break
     return answer
