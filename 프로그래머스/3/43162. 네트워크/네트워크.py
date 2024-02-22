@@ -1,11 +1,11 @@
 def solution(n, computers):
     vertext_cnt = n
-    graph = [[] for _ in range(vertext_cnt + 1)]
-    for computer, vertexts in enumerate(computers, start=1):
-        for vertext, value in enumerate(vertexts, start=1):
+    graph = [[] for _ in range(vertext_cnt)]
+    for computer, vertexts in enumerate(computers):
+        for vertext, value in enumerate(vertexts):
             if value: graph[computer].append(vertext)
 
-    check = [0] * (vertext_cnt + 1)
+    check = [0] * vertext_cnt
     def dfs(vertext):
         check[vertext] = 1
         for next_vertext in graph[vertext]:
@@ -13,7 +13,7 @@ def solution(n, computers):
                 dfs(next_vertext)
 
     answer = 0
-    for vertext in range(1, vertext_cnt + 1):
+    for vertext in range(vertext_cnt):
         if graph[vertext] and not check[vertext]:
             answer += 1
             dfs(vertext)
