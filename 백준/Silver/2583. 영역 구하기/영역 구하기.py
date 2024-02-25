@@ -12,26 +12,23 @@ def solution(m, n, k, squares):
             for col in range(start_col, end_col):
                 paper[row][col] = 1
 
-    def dfs(row, col):
-        nonlocal cnt
-        cnt += 1
+    def dfs(row, col, cnt):
         paper[row][col] = 1
         for d in range(4):
             nrow = row + drow[d]
             ncol = col + dcol[d]
             if (0 <= nrow < m) and (0 <= ncol < n) and (not paper[nrow][ncol]):
-                dfs(nrow, ncol)
+                cnt = dfs(nrow, ncol, cnt + 1)
+        return cnt
 
     answer = 0
     counter = []
     for row in range(m):
-        cnt = 0
         for col in range(n):
             if not paper[row][col]:
                 answer += 1
-                dfs(row, col)
+                cnt = dfs(row, col, 1)
                 counter.append(cnt)
-                cnt = 0
 
     print(answer)
     print(*sorted(counter))
