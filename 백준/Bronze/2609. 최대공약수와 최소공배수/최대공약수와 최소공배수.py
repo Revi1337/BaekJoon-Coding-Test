@@ -1,26 +1,24 @@
 import sys
 
 input = sys.stdin.readline
-
 def solution(num1, num2):
-    if num1 == num2:
-        print(num1)
-        print(num2)
-        return
 
-    max_num, min_num = max(num1, num2), min(num1, num2)
-    answer = [0] * 2
-    for number in range(1, int(max_num * 0.5) + 1):
-        if (min_num % number == 0) and (max_num % number == 0):
-            answer[0] = number
+    """ 최대공약수 """
+    def gcd(num1, num2) -> int:
+        min_num, max_num = min(num1, num2), max(num1, num2)
+        while max_num % min_num > 0:
+            max_num, min_num = min_num, max_num % min_num
+        return min_num
 
-    counter = 1
-    while (max_num * counter) % min_num:
-        counter += 1
-    answer[1] = max_num * counter
+    """ 최소공배수 """
+    def lcm(num1, num2) -> int:
+        return (num1 * num2) // gcd(num1, num2)
 
-    for integer in answer:
-        print(integer)
+    gcd_num = gcd(num1, num2)
+    lcm_num = lcm(num1, num2)
+
+    print(gcd_num)
+    print(lcm_num)
 
 v1, v2 = map(int, input().split())
 solution(v1, v2)
