@@ -3,15 +3,16 @@ import sys
 input = sys.stdin.readline
 
 def solution(m, n):
-    for i in range(m, n + 1):
-        if i == 1:
-            continue
-        for j in range(2, int(i ** 0.5) + 1):
-            if i % j == 0:
-                break
-        else:
-            print(i)
-
+    check = [0] * (n + 1)
+    answer = []
+    for integer in range(2, n + 1):
+        if check[integer] == 0:
+            answer.append(integer)
+            for number in range(integer, n + 1, integer):
+                check[number] = 1
+    for integer in answer:
+        if m <= integer <= n:
+            print(integer)
 
 m, n = map(int, input().split())
 solution(m, n)
