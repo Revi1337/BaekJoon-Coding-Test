@@ -27,10 +27,9 @@ def solution(maps):
             if (0 <= nrow < row_cnt) and (0 <= ncol < col_cnt) and (maps[nrow][ncol] != 'X'):
                 if not check[nrow][ncol][touch]:
                     if maps[nrow][ncol] == 'L':
-                        check[nrow][ncol][touch] = 1
+                        check[nrow][ncol][touch] = time + 1
                         queue.append((nrow, ncol, 1, time + 1))
                     else:
-                        check[nrow][ncol][touch] = 1
+                        check[nrow][ncol][touch] = time + 1
                         queue.append((nrow, ncol, touch, time + 1))
     return -1
-
