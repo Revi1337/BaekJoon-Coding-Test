@@ -10,7 +10,7 @@ def solution(v, e, edges):
         graph[v2].append(v1)
 
     check = [0] * (v + 1)
-    result = True
+    bipartite = True
     for vertext in range(1, v + 1):
         if not check[vertext]:
             check[vertext] = 1
@@ -19,17 +19,15 @@ def solution(v, e, edges):
                 node = queue.popleft()
                 for next_node in graph[node]:
                     if not check[next_node]:
-                        if check[node] == 1:
-                            check[next_node] = 2
-                        else:
-                            check[next_node] = 1
+                        check[next_node] = check[node] * -1
                         queue.append(next_node)
                     else:
                         if check[node] == check[next_node]:
-                            result = False
-        if not result:
+                            bipartite = False
+        if not bipartite:
             break
-    return 'YES' if result else 'NO'
+
+    return 'YES' if bipartite else 'NO'
 
 k = int(input())
 for _ in range(k):
