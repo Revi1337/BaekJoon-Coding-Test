@@ -11,12 +11,14 @@ def solution(n, m, board):
     check = [[0] * m for _ in range(n)]
 
     def dfs(row, col, s_row, s_col, counter):
+        nonlocal cycle
+        if cycle:
+            return
         for d in range(4):
             nrow = row + drow[d]
             ncol = col + dcol[d]
             if (0 <= nrow < n) and (0 <= ncol < m):
                 if (counter >= 4) and ((nrow, ncol) == (s_row, s_col)):
-                    nonlocal cycle
                     cycle = True
                     return
                 if (not check[nrow][ncol]) and (board[row][col] == board[nrow][ncol]):
