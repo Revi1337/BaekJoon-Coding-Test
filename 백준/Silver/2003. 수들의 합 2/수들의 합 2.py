@@ -5,7 +5,7 @@ input = sys.stdin.readline
 def solution(n, m, numbers):
     answer = 0
     left, right = 0, 1
-    while left <= right and right <= n:
+    while left <= right <= n:
         total = sum(numbers[left : right])
         if total < m:
             right += 1
