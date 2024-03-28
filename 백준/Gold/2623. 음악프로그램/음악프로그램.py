@@ -26,7 +26,7 @@ def solution(n, m, pds):
                 answer.append(next_job)
                 queue.append(next_job)
 
-    if len(answer) != n:
+    if len(answer) < n:
         print(0)
     else:
         for ans in answer:
