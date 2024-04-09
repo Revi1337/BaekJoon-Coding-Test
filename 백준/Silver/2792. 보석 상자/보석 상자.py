@@ -3,8 +3,7 @@ import sys
 input = sys.stdin.readline
 
 def solution(n, m, colors):
-    colors.sort()
-    left, right = 1, colors[-1]
+    left, right = 1, max(colors)
     while left <= right:
         mid = (left + right) // 2
         counter = 0
