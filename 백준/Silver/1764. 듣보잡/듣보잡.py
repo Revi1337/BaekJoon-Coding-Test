@@ -4,10 +4,10 @@ input = sys.stdin.readline
 
 def solution(n, m, arr1, arr2):
     if n <= m:
-        book = {value: '' for value in arr2}
+        book = set(arr2)
         arr = arr1
     else:
-        book = {value: '' for value in arr1}
+        book = set(arr1)
         arr = arr2
 
     answer = 0
