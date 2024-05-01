@@ -10,7 +10,7 @@ def solution(N, a):
             if counter == a[i] and answer[idx] == 0:
                 answer[idx] = i + 1
                 break
-            elif answer[idx] == 0:
+            if answer[idx] == 0:
                 counter += 1
     print(*answer)
 
