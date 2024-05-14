@@ -7,7 +7,7 @@ def solution(i, N, K, scores):
         score[idx] += s3 * 0.2
 
     target = score[K]
-    sorted_total = sorted(score, reverse=True)
+    sorted_total = sorted(score[1:], reverse=True)
     offset = N // 10
     answer = sorted_total.index(target) // offset
     return f'#{i} {seed[answer]}'
