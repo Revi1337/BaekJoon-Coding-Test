@@ -5,8 +5,9 @@ def solution(idx, N, datas):
         answer += (char * int(counter))
         cnt += int(counter)
     print(f'#{idx}')
-    for i in range(0, cnt, 10):
-        print(answer[i: i + 10])
+    while answer:
+        print(answer[:10])
+        answer = answer[10:]
 
 T = int(input())
 for idx in range(T):
