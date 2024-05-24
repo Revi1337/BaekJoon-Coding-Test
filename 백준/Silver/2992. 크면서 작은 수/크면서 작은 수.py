@@ -14,6 +14,7 @@ def solution(X):
             counter[int(char)] += 1
         if counter == frequency:
             return number
+        del counter
     return 0
 
 X = int(input())
