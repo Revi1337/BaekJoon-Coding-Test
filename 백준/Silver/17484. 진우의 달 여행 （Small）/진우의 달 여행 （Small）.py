@@ -15,7 +15,7 @@ def solution(N, M, board):
             answer = min(answer, total)
             return
         for d in range(3):
-            if d != dir and dir is not None:
+            if d != dir:
                 nrow, ncol = row + drow[d], col + dcol[d]
                 if (0 <= nrow < N) and (0 <= ncol < M) and (check[nrow][ncol] == 0):
                     check[nrow][ncol] = 1
@@ -23,7 +23,7 @@ def solution(N, M, board):
                     check[nrow][ncol] = 0
 
     for col in range(col_length):
-        check = [[0] * M for _ in range(N)]
+        check = [[0]  *M for _ in range(N)]
         check[0][col] = 1
         dfs(0, col, -1, board[0][col])
         check[0][col] = 0
