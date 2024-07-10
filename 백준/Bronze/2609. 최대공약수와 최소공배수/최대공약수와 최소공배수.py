@@ -6,7 +6,7 @@ def solution(a, b):
 
     def gcd(a, b): # gcd 는 최대공약수를 의미 (유클리드 호제법)
         max_num, min_num = max(a, b), min(a, b)
-        while max_num % min_num > 0:
+        while max_num % min_num != 0:
             max_num, min_num = min_num, max_num % min_num
         return min_num
 
@@ -18,6 +18,7 @@ def solution(a, b):
 
     print(gcd_answer)
     print(lcm_answer)
+
 
 a, b = map(int, input().split())
 solution(a, b)
