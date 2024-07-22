@@ -10,8 +10,8 @@ def solution(N):
         trash.append(queue.popleft())
         queue.rotate(-1)
 
-    for t in trash:
-        print(t, end = ' ')
+    if trash:
+        print(*trash, sep = ' ')
     print(queue[0], end = ' ')
 
 N = int(input())
