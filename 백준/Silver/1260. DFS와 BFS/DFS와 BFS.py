@@ -1,40 +1,43 @@
-def solution(n, m, k, edges):
-    graph = [[] for _ in range(n + 1)]
+import sys
+from collections import deque
+
+input = sys.stdin.readline
+
+def solution(N, M, V, edges):
+    graphs = [[] for _ in range(N + 1)]
     for v1, v2 in edges:
-        graph[v1].append(v2)
-        graph[v2].append(v1)
-    for idx, vertexts in enumerate(graph):
-        vertexts.sort()
+        graphs[v1].append(v2)
+        graphs[v2].append(v1)
 
-    check = [0] * (n + 1)
-    def DFS(vertext):
-        print(vertext, end = ' ')
-        check[vertext] = 1
-        for next_vertext in graph[vertext]:
-            if check[next_vertext] == 0:
-                DFS(next_vertext)
+    for line in graphs:
+        line.sort()
 
-    def BFS(vertext):
-        from collections import deque
-        check = [0] * (n + 1)
-        queue = deque()
-        queue.append(vertext)
-        check[vertext] = 1
+    def dfs(entry):
+        print(entry, end = ' ')
+        check[entry] = 1
+        for nv in graphs[entry]:
+            if not check[nv]:
+                dfs(nv)
+
+    def bfs(entry):
+        queue = deque([entry])
+        check[entry] = 1
         while queue:
-            vertext_cnt = len(queue)
-            for _ in range(vertext_cnt):
-                vertext = queue.popleft()
-                print(vertext, end = ' ')
-                for next_vertext in graph[vertext]:
-                    if check[next_vertext] == 0:
-                        queue.append(next_vertext)
-                        check[next_vertext] = 1
-    
-    DFS(k)
-    print()
-    BFS(k)
-    print()
+            v1 = queue.popleft()
+            print(v1, end = ' ')
+            for nv in graphs[v1]:
+                if not check[nv]:
+                    queue.append(nv)
+                    check[nv] = 1
 
-n, m, k = map(int, input().split())
-edges = [list(map(int, input().split())) for _ in range(m)]
-solution(n, m, k, edges)
+    check = [0] * (N + 1)
+    dfs(V)
+    print()
+    check = [0] * (N + 1)
+    bfs(V)
+
+
+
+N, M, V = map(int, input().split())
+edges = [list(map(int, input().split())) for _ in range(M)]
+solution(N, M, V, edges)
