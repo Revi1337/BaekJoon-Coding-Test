@@ -1,32 +1,39 @@
+import sys
+
+input = sys.stdin.readline
+
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(n, maps):
+def solution(N, board):
 
+    ansc = 0
+    ans = []
     counter = 0
 
     def dfs(row, col):
-        nonlocal counter
-        counter += 1
-        maps[row][col] = 0
+        board[row][col] = -1
         for d in range(4):
             nrow = row + drow[d]
             ncol = col + dcol[d]
-            if (0 <= nrow < n) and (0 <= ncol < n) and (maps[nrow][ncol]):
+            if (0 <= nrow < N) and (0 <= ncol < N) and (board[nrow][ncol] == 1):
+                nonlocal counter
+                counter += 1
                 dfs(nrow, ncol)
 
-    answer = []
-    for row in range(n):
-        for col in range(n):
-            if maps[row][col]:
+    for row in range(N):
+        for col in range(N):
+            if board[row][col] == 1:
+                ansc += 1
+                counter += 1
                 dfs(row, col)
-                answer.append(counter)
+                ans.append(counter)
                 counter = 0
 
-    print(len(answer))
-    for cnt in sorted(answer):
-        print(cnt)
+    print(ansc)
+    print(*sorted(ans), sep = '\n')
 
-n = int(input())
-maps = [list(map(int, input())) for _ in range(n)]
-solution(n, maps)
+
+N = int(input())
+board = [list(map(int, input().strip())) for _ in range(N)]
+solution(N, board)
