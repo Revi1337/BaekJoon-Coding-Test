@@ -1,70 +1,36 @@
-# ============ DFS ===============
 import sys
-sys.setrecursionlimit(10000)
 
-dx = [-1, 0, 1, 0]
-dy = [0, 1, 0, -1]
+sys.setrecursionlimit(10 ** 6)
+input = sys.stdin.readline
 
-def solution(m, n, positions):
-    field = [[0] * m for _ in range(n)]
+drow = [-1, 0, 1, 0]
+dcol = [0, 1, 0, -1]
+
+def solution(M, N, K, positions):
+    answer = 0
+    board = [[0] * M for _ in range(N)]
     for col, row in positions:
-        field[row][col] = 1
+        board[row][col] = 1
 
-    def DFS(r, c):
-        field[r][c] = 0
+    def dfs(row, col):
+        board[row][col] = -1
         for d in range(4):
-            nx = r + dx[d]
-            ny = c + dy[d]
-            if (0 <= nx < n) and (0 <= ny < m) and field[nx][ny] == 1:
-                DFS(nx, ny)
+            nrow = row + drow[d]
+            ncol = col + dcol[d]
+            if (0 <= nrow < N) and (0 <= ncol < M) and (board[nrow][ncol] == 1):
+                dfs(nrow, ncol)
 
-    answer = 0
-    for row in range(n):
-        for col in range(m):
-            if field[row][col] == 1:
+    for row in range(N):
+        for col in range(M):
+            if board[row][col] == 1:
                 answer += 1
-                DFS(row, col)
-    return answer
+                dfs(row, col)
 
-t = int(input())
-for _ in range(t):
-    m, n, k = map(int, input().split())
-    positions = [list(map(int, input().split())) for _ in range(k)]
-    print(solution(m, n, positions))
+    print(answer)
 
-# ============ BFS ===============
-from collections import deque
 
-dr = [-1, 0, 1, 0]
-dc = [0, 1, 0, -1]
-
-def solution(m, n, positions):
-    field = [[0] * m for _ in range(n)]
-    for col, row in positions:
-        field[row][col] = 1
-
-    queue = deque()
-    answer = 0
-    for row in range(n):
-        for col in range(m):
-            if field[row][col] == 1:
-                answer += 1
-                queue.append([row, col])
-                field[row][col] = 0
-                while queue:
-                    node_cnt = len(queue)
-                    for _ in range(node_cnt):
-                        r, c = queue.popleft()
-                        for d in range(4):
-                            nr = r + dr[d]
-                            nc = c + dc[d]
-                            if (0 <= nr < n) and (0 <= nc < m) and field[nr][nc] == 1:
-                                queue.append([nr, nc])
-                                field[nr][nc] = 0
-    return answer
-
-t = int(input())
-for _ in range(t):
-    m, n, k = map(int, input().split())
-    positions = [list(map(int, input().split())) for _ in range(k)]
-    print(solution(m, n, positions))
+T = int(input())
+for _ in range(T):
+    M, N, K = map(int, input().split())
+    positions = [list(map(int, input().split())) for _ in range(K)]
+    solution(M, N, K, positions)
