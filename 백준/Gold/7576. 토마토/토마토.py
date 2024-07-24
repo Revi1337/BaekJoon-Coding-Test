@@ -1,54 +1,38 @@
+import sys
 from collections import deque
+
+input = sys.stdin.readline
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(col_cnt, row_cnt, board):
-    tomato_pos = []
-    counter = 0
-    early_return = True
-    for row in range(row_cnt):
-        for col in range(col_cnt):
-            if board[row][col] == 1:
-                tomato_pos.append((row, col))
-                early_return = early_return and True
-            else:
-                early_return = early_return and False
-            if board[row][col] == 0:
-                counter += 1
-
-    if early_return: return 0
-
+def solution(M, N, box):
     queue = deque()
-    check = {*tomato_pos}
-    queue.extend(tomato_pos)
-    level = 0
+    distance = [[0] * M for _ in range(N)]
+    answer = -1e9
+    for row in range(N):
+        for col in range(M):
+            if box[row][col] == 1:
+                distance[row][col] = 1
+                queue.append((row, col))
+
     while queue:
-        node_cnt = len(queue)
-        for _ in range(node_cnt):
-            row, col = queue.popleft()
-            for d in range(4):
-                nrow = row + drow[d]
-                ncol = col + dcol[d]
-                if (
-                        (0 <= nrow < row_cnt)
-                            and
-                        (0 <= ncol < col_cnt)
-                            and
-                        (board[nrow][ncol] == 0 and board[nrow][ncol] != -1)
-                            and
-                        ((nrow, ncol) not in check)
-                ):
-                    counter -= 1
-                    check.add((nrow, ncol))
-                    queue.append((nrow, ncol))
-        level += 1
+        row, col = queue.popleft()
+        for d in range(4):
+            nrow = row + drow[d]
+            ncol = col + dcol[d]
+            if (0 <= nrow < N) and (0 <= ncol < M) and (box[nrow][ncol] == 0) and (distance[nrow][ncol] == 0):
+                distance[nrow][ncol] = distance[row][col] + 1
+                queue.append((nrow, ncol))
 
-        if not counter:
-            return 0 if level == 1 else level
+    for row in range(N):
+        for col in range(M):
+            if distance[row][col] == 0 and box[row][col] != -1:
+                return -1
+            answer = max(answer, distance[row][col])
 
-    return -1
+    return answer - 1
 
-n, m = map(int, input().split())
-board = [list(map(int, input().split())) for _ in range(m)]
-print(solution(n, m, board))
+M, N = map(int, input().split())
+box = [list(map(int, input().split())) for _ in range(N)]
+print(solution(M, N, box))
