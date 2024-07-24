@@ -1,6 +1,6 @@
 import sys
+from collections import deque
 
-sys.setrecursionlimit(10 ** 6)
 input = sys.stdin.readline
 
 drow = [-1, 0, 1, 0]
@@ -12,22 +12,24 @@ def solution(M, N, K, positions):
     for col, row in positions:
         board[row][col] = 1
 
-    def dfs(row, col):
-        board[row][col] = -1
-        for d in range(4):
-            nrow = row + drow[d]
-            ncol = col + dcol[d]
-            if (0 <= nrow < N) and (0 <= ncol < M) and (board[nrow][ncol] == 1):
-                dfs(nrow, ncol)
+    def bfs(r, c):
+        queue = deque([(r, c)])
+        board[r][c] = -1
+        while queue:
+            row, col = queue.popleft()
+            for d in range(4):
+                nrow, ncol = row + drow[d], col + dcol[d]
+                if (0 <= nrow < N) and (0 <= ncol < M) and (board[nrow][ncol] == 1):
+                    queue.append((nrow, ncol))
+                    board[nrow][ncol] = -1
 
     for row in range(N):
         for col in range(M):
             if board[row][col] == 1:
                 answer += 1
-                dfs(row, col)
+                bfs(row, col)
 
     print(answer)
-
 
 T = int(input())
 for _ in range(T):
