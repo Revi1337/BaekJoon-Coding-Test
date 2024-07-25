@@ -1,25 +1,28 @@
-def solution(n, m, edges):
-    vertext_cnt = n
-    graph = [[] for _ in range(vertext_cnt + 1)]
-    for vertext1, vertext2 in edges:
-        graph[vertext1].append(vertext2)
-        graph[vertext2].append(vertext1)
+import sys
 
-    def dfs(vertext):
-        check[vertext] = 1
-        for next_vertext in graph[vertext]:
-            if not check[next_vertext]:
-                dfs(next_vertext)
+input = sys.stdin.readline
 
-    check = [0] * (vertext_cnt + 1)
+def solution(N, M, edges):
+    graph = [[] for _ in range(N + 1)]
+    check = [0] * (N + 1)
     answer = 0
-    for vertext in range(1, vertext_cnt + 1):
-        if not check[vertext]:
+    for v1, v2 in edges:
+        graph[v1].append(v2)
+        graph[v2].append(v1)
+
+    def dfs(entry):
+        check[entry] = 1
+        for nv in graph[entry]:
+            if not check[nv]:
+                dfs(nv)
+
+    for v in range(1, N + 1):
+        if not check[v]:
             answer += 1
-            dfs(vertext)
+            dfs(v)
 
     return answer
 
-n, m = map(int, input().split())
-edges = [list(map(int, input().split())) for _ in range(m)]
-print(solution(n, m, edges))
+N, M = map(int, input().split())
+edges = [list(map(int, input().split())) for _ in range(M)]
+print(solution(N, M, edges))
