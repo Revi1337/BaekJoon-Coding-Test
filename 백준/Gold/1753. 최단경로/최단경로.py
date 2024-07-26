@@ -1,31 +1,34 @@
+import sys
 import heapq
 
-def solution(vertext_cnt, edges_cnt, entrypoint, edges):
-    graph = [[] for _ in range(vertext_cnt + 1)]
-    for vertext1, vertext2, cost in edges:
-        graph[vertext1].append([vertext2, cost])
+input = sys.stdin.readline
 
-    costs = [float('inf') for _ in range(vertext_cnt + 1)]
-    costs[entrypoint] = 0
+def solution(V, E, K, edges):
+    graph = [[] for _ in range(V + 1)]
+    for v1, v2, w in edges:
+        graph[v1].append([v2, w])
 
-    queue = []
-    heapq.heappush(queue, [costs[entrypoint], entrypoint])
-    while queue:
-        curr_cost, curr_vertext = heapq.heappop(queue)
-        if curr_cost < costs[curr_vertext]:
+    costs = [float('inf')] * (V + 1)
+    costs[K] = 0
+    pq = []
+    heapq.heappush(pq, [costs[K], K])
+    while pq:
+        cost, vertext = heapq.heappop(pq)
+        if costs[vertext] < cost:
             continue
-        for next_vertext, next_cost in graph[curr_vertext]:
-            predicate_cost = costs[curr_vertext] + next_cost
-            if predicate_cost < costs[next_vertext]:
-                costs[next_vertext] = predicate_cost
-                heapq.heappush(queue, [predicate_cost, next_vertext])
-    for vertext in range(1, vertext_cnt + 1):
-        if costs[vertext] == float('inf'):
+        for next_vertext, next_cost in graph[vertext]:
+            total_cost = cost + next_cost
+            if total_cost < costs[next_vertext]:
+                costs[next_vertext] = total_cost
+                heapq.heappush(pq, [total_cost, next_vertext])
+
+    for c in costs[1:]:
+        if c == float('inf'):
             print('INF')
         else:
-            print(costs[vertext])
+            print(c)
 
-v, e = map(int, input().split())
-k = int(input())
-edges = [list(map(int, input().split())) for _ in range(e)]
-solution(v, e, k, edges)
+V, E = map(int, input().split())
+K = int(input())
+edges = [list(map(int, input().split())) for _ in range(E)]
+solution(V, E, K, edges)
