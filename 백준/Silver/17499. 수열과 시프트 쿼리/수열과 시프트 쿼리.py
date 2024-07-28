@@ -13,11 +13,7 @@ def solution(N, Q, integers, operations):
         elif operation[0] == 3:
             left = (left + operation[1]) % N
 
-    for idx in range(left, N):
-        print(integers[idx], end = ' ')
-    for idx in range(left):
-        print(integers[idx], end = ' ')
-    print()
+    print(*integers[left:], *integers[:left], sep=' ')
 
 N, Q = map(int, input().split())
 integers = list(map(int, input().split()))
