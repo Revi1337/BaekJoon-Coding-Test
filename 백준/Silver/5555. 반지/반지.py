@@ -11,15 +11,13 @@ def solution(t, N, rings):
     tlength = len(t)
     for ring in rings:
         length = len(ring)
+        ring *= 2
         for start in range(length):
-            end = (start + tlength) % length
-            if end > start:
-                string = ring[start : end]
-            else:
-                string = ring[start:] + ring[:end]
+            string = ring[start : start + tlength]
             if string == t:
                 answer += 1
                 break
+
     return answer
 
 t = input().rstrip()
