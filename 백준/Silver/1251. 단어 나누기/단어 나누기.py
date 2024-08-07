@@ -11,9 +11,7 @@ def solution(word):
     words = []
     for i in range(length):
         for j in range(i, length):
-            prefix = word[:i]
-            middle = word[i:j]
-            postfix = word[j:]
+            prefix, middle, postfix = word[:i], word[i:j], word[j:]
             if prefix != '' and middle != '' and postfix != '':
                 words.append(prefix[::-1] + middle[::-1] + postfix[::-1])
 
@@ -21,4 +19,3 @@ def solution(word):
 
 word = input().rstrip()
 print(solution(word))
-
