@@ -2,19 +2,21 @@ import sys
 
 input = sys.stdin.readline
 
-def solution(n, k, numbers):
-    answer = sum(numbers[0 : k])
-    previous = answer
-    left, right = 0, k
-    for idx in range(1, n - k + 1):
-        temp = previous - numbers[left] + numbers[right]
-        previous = temp
-        answer = max(answer, temp)
-        left += 1
-        right += 1
+'''
+수열 (https://www.acmicpc.net/problem/2559)
+2024-08-14
+'''
 
+def solution(N, K, temps):
+    left, right = 0, K
+    temp = sum(temps[left : right])
+    answer = temp
+    while right < N:
+        temp = temp - temps[left] + temps[right]
+        answer = max(answer, temp)
+        left, right = left + 1, right + 1
     return answer
 
-n, k = map(int, input().split())
-numbers = list(map(int, input().split()))
-print(solution(n, k, numbers))
+N, K = map(int, input().split())
+temps = list(map(int, input().split()))
+print(solution(N, K, temps))
