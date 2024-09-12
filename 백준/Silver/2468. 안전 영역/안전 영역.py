@@ -1,40 +1,48 @@
 import sys
+from collections import deque
 
-sys.setrecursionlimit(10 ** 5)
+input = sys.stdin.readline
+
+"""
+안전 영역 (https://www.acmicpc.net/problem/2468)
+2024-09-12
+"""
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def dfs(row, col):
-    check[row][col] = 1
-    for d in range(4):
-        nrow = row + drow[d]
-        ncol = col + dcol[d]
-        if (0 <= nrow < n) and (0 <= ncol < n) and (blocks[nrow][ncol] > height) and (check[nrow][ncol] == 0):
-            dfs(nrow, ncol)
+def solution(N, board):
+    maxH = 1
+    for line in board:
+        maxH = max(maxH, max(line))
 
-minN = 100_000_000
-maxN = -100_000_000
-n = int(input())
-blocks = []
-for _ in range(n):
-    integers = list(map(int, input().split()))
-    for integer in integers:
-        if integer < minN:
-            minN = integer
-        if integer > maxN:
-            maxN = integer
-    blocks.append(integers)
+    answer = 0
+    for h in range(maxH + 1):
+        new = [line[:] for line in board]
+        for row in range(N):
+            for col in range(N):
+                if new[row][col] <= h:
+                    new[row][col] = -1
 
-res = -100_000_000
-for height in range(0, maxN + 1):
-    check = [[0] * n for _ in range(n)]
-    cnt = 0
-    for i in range(n):
-        for j in range(n):
-            if check[i][j] == 0 and blocks[i][j] > height:
-                dfs(i, j)
-                cnt += 1
-    res = max(res, cnt)
+        counter = 0
+        for row in range(N):
+            for col in range(N):
+                if new[row][col] not in [-1, -2]:
+                    counter += 1
+                    new[row][col] = -2
+                    queue = deque([(row, col)])
+                    while queue:
+                        r, c = queue.popleft()
+                        for d in range(4):
+                            nr, nc = r + drow[d], c + dcol[d]
+                            if (0 <= nr < N) and (0 <= nc < N):
+                                if new[nr][nc] not in [-1, -2]:
+                                    new[nr][nc] = -2
+                                    queue.append((nr, nc))
+        answer = max(answer, counter)
 
-print(res)
+    return answer
+
+N = int(input())
+board = [list(map(int, input().split())) for _ in range(N)]
+print(solution(N, board))
