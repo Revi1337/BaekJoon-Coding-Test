@@ -9,7 +9,7 @@ input = sys.stdin.readline
 """
 
 def solution(F, S, G, U, D):
-    distance = [-1] * 1_000_001
+    distance = [-1] * (F + 1)
     distance[S] = 0
     queue = deque([S])
     while queue:
