@@ -2,29 +2,31 @@ import sys
 
 input = sys.stdin.readline
 
+"""
+N 과 M (2) (https://www.acmicpc.net/problem/15650) 
+2024-09-14
+"""
 
 def solution(N, M):
-
-    def permutation(current):
-        if len(current) == M:
-            prev = current[0]
-            breaked = False
+    def recursive(level, lst):
+        if level == M:
+            possible = True
             for idx in range(1, M):
-                if current[idx] < prev:
-                    breaked = True
+                if lst[idx - 1] >= lst[idx]:
+                    possible = False
                     break
-                prev = current[idx]
-            if not breaked:
-                answer.append(current[:])
+            if possible:
+                answer.append(lst)
             return
-        for number in range(1, N + 1):
-            if number not in current:
-                current.append(number)
-                permutation(current)
-                current.pop()
+        for idx in range(1, N + 1):
+            if not check[idx]:
+                check[idx] = 1
+                recursive(level + 1, lst + [idx])
+                check[idx] = 0
 
     answer = []
-    permutation([])
+    check = [0] * (N + 1)
+    recursive(0, [])
     for line in answer:
         print(*line)
 
