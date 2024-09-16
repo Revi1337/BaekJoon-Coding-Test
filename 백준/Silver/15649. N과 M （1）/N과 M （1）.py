@@ -2,26 +2,22 @@ import sys
 
 input = sys.stdin.readline
 
-"""
-N 과 M (1) (https://www.acmicpc.net/problem/15649) 
-2024-09-14
-"""
-
 def solution(N, M):
 
-    def recursive(level, lst):
-        if level == M:
+    def recursive(depth, lst):
+        if depth == M:
             answer.append(lst)
             return
-        for idx in range(1, N + 1):
-            if not check[idx]:
-                check[idx] = 1
-                recursive(level + 1, lst + [idx])
-                check[idx] = 0
+        for num in range(1, N + 1):
+            if not check[num]:
+                check[num] = 1
+                recursive(depth + 1, lst + [num])
+                check[num] = 0
 
-    answer = []
     check = [0] * (N + 1)
+    answer = []
     recursive(0, [])
+
     for line in answer:
         print(*line)
 
