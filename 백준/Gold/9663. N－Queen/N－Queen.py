@@ -9,6 +9,13 @@ N-Queen (https://www.acmicpc.net/problem/9663)
 
 def solution(N):
 
+    """
+    check2, check3 == 대각선
+    check2 는 row + col 이라 2N 인건 이해가능
+    check3 는 row - col 인데, - 일 수 있고, + 일 수 있기 때문에, 2N 을 해야함. + 일땐 앞에서 부터 양수 인덱스 체크, - 일때는 뒤에서부터 인덱스 체크 함.
+            [0,0,0,0    0,0,0,0]
+            (+) -->      <-- (-)
+    """
     def recursive(depth):
         if depth == N:
             nonlocal answer
