@@ -16,7 +16,7 @@ def solution(N, M, numbers):
             answer.append(lst)
             return
         for idx in range(index, N):
-            if not check[idx] and idx >= index:
+            if not check[idx]:
                 check[idx] = 1
                 recursive(depth + 1, idx, lst + [numbers[idx]])
                 check[idx] = 0
