@@ -18,19 +18,16 @@ mo = {'a', 'e', 'i', 'o', 'u'}
 def solution(N, C, alphas):
     alphas.sort()
 
-    def recursive(depth, index, lst):
-        if depth == N:
-            cnt1 = cnt2 = 0
-            for alpha in lst:
-                if alpha in mo:
-                    cnt1 += 1
-                else:
-                    cnt2 += 1
-            if cnt1 >= 1 and cnt2 >= 2:
+    def recursive(n, cnt, lst):
+        if n == C:
+            if len(lst) == N and cnt >= 1 and N - cnt >= 2:
                 answer.append(lst)
             return
-        for idx in range(index, C):
-            recursive(depth + 1, idx + 1, lst + [alphas[idx]])
+        if alphas[n] in mo:
+            recursive(n + 1, cnt + 1, lst + [alphas[n]])
+        else:
+            recursive(n + 1, cnt, lst + [alphas[n]])
+        recursive(n + 1, cnt, lst)
 
     answer = []
     recursive(0, 0, [])
