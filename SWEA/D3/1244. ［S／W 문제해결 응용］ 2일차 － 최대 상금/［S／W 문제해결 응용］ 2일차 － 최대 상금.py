@@ -1,30 +1,30 @@
-def solution(seq, num, cnt):
-    lst = list(str(num))
-    length = len(lst)
+def solution(index, num, cnt):
+
+    num_len = len(str(num))
+    numbers = list(str(num))
     answer = 0
     check = set()
 
-    def dfs(counter):
-        if counter == cnt:
+    def backtracking(change_cnt):
+        if change_cnt == cnt:
             nonlocal answer
-            answer = max(answer, int("".join(map(str, lst))))
+            answer = max(answer, int("".join(map(str, numbers))))
             return
-        for i in range(length - 1):             # lst 에서 2개를 뽑는 모든 조합 (둘을 교환)
-            for j in range(i + 1, length):
-                lst[i], lst[j] = lst[j], lst[i]
+        for i in range(num_len - 1): # 2개를 뽑는 모든 조합 (둘을 교환) (1)
+            for j in range(i + 1, num_len): # (2)
+                numbers[i], numbers[j] = numbers[j], numbers[i]
 
-                tmp = int("".join(map(str, lst)))
-                if (counter, tmp) not in check:
-                    dfs(counter + 1)
-                    check.add((counter, tmp))
+                chk = int("".join(map(str, numbers)))
+                if (change_cnt, chk) not in check:
+                    backtracking(change_cnt + 1)
+                    check.add((change_cnt, chk))
 
-                lst[i], lst[j] = lst[j], lst[i] # 반드시 원상복구
+                numbers[i], numbers[j] = numbers[j], numbers[i]
 
-    dfs(0)
-
-    return f'#{seq} {answer}'
+    backtracking(0)
+    return f'#{index} {answer}'
 
 T = int(input())
-for idx in range(T):
-    num, cnt = map(int, input().split())
-    print(solution(idx + 1, num, cnt))
+for index in range(T):
+    numbers, cnt = map(int, input().split())
+    print(solution(index + 1, numbers, cnt))
