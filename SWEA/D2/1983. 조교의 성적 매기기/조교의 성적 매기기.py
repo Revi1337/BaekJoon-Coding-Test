@@ -1,16 +1,18 @@
-def solution(i, N, K, scores):
-    seed = ['A+', 'A0', 'A-', 'B+', 'B0', 'B-', 'C+', 'C0', 'C-', 'D0']
-    score = [0] * (N + 1)
-    for idx, (s1, s2, s3) in enumerate(scores, start=1):
-        score[idx] += s1 * 0.35
-        score[idx] += s2 * 0.45
-        score[idx] += s3 * 0.2
+grades = ['A+', 'A0', 'A-', 'B+', 'B0', 'B-', 'C+', 'C0', 'C-', 'D0']
 
-    target = score[K]
-    sorted_total = sorted(score[1:], reverse=True)
+def solution(idx, N, K, scores):
+    s_scores = [0] * (N + 1)
+    for index, (mid, final, work) in enumerate(scores, start=1):
+        s_scores[index] += mid * 0.35
+        s_scores[index] += final * 0.45
+        s_scores[index] += work * 0.20
+
+    target = s_scores[K]
+    ss_scores = sorted(s_scores[1:], reverse=True)
     offset = N // 10
-    answer = sorted_total.index(target) // offset
-    return f'#{i} {seed[answer]}'
+    answer = ss_scores.index(target) // offset
+
+    return f'#{idx} {grades[answer]}'
 
 T = int(input())
 for idx in range(T):
