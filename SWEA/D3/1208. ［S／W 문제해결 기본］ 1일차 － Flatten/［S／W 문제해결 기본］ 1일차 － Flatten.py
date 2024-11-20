@@ -1,9 +1,10 @@
 def solution(count, heights):
     for cnt in range(count):
         minH, maxH = min(heights), max(heights)
-        minIdx, maxIdx = heights.index(minH), heights.index(maxH)
-        heights[minIdx] += 1
-        heights[maxIdx] -= 1
+        if minH != maxH:
+            minIdx, maxIdx = heights.index(minH), heights.index(maxH)
+            heights[minIdx] += 1
+            heights[maxIdx] -= 1
 
     return max(heights) - min(heights)
 
