@@ -1,6 +1,3 @@
-drow = [0, 1, 0]
-dcol = [-1, 0, 1]
-
 def solution(board):
     for line in board:
         line.insert(0, 0)
@@ -19,15 +16,14 @@ def solution(board):
             possible.append([0, col])
 
     for poss in possible:
-        d = 1
         curr = [poss[0], poss[1]]
 
         while curr[0] < 100:
-            if curr[1] > 0 and board[curr[0]][curr[1] - 1] == 1:  # 왼쪽 이동 가능?
-                while curr[1] > 0 and board[curr[0]][curr[1] - 1] == 1:
+            if board[curr[0]][curr[1] - 1] == 1:  # 왼쪽 이동 가능
+                while board[curr[0]][curr[1] - 1] == 1:
                     curr[1] -= 1
-            elif curr[1] < 101 and board[curr[0]][curr[1] + 1] == 1:  # 오른쪽 이동 가능?
-                while curr[1] < 101 and board[curr[0]][curr[1] + 1] == 1:
+            elif board[curr[0]][curr[1] + 1] == 1:  # 오른쪽 이동 가능
+                while board[curr[0]][curr[1] + 1] == 1:
                     curr[1] += 1
             curr[0] += 1 # 아래로 이동
 
