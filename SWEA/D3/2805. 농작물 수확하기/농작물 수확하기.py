@@ -1,17 +1,17 @@
-def solution(seq, length, board):
-    counter = int(length // 2)
-    answer = sum(board[counter])
-    i = 0
-    while counter > i:
-        answer += sum(board[i][counter - i:counter + i + 1])
-        answer += sum(board[length - i - 1][counter - i:counter + i + 1])
-        i += 1
+def solution(N, board):
+    mid = N // 2
+    answer = sum(board[mid])
+    init = 0
 
-    return f"#{seq} {answer}"
+    while init < mid:
+        answer += sum(board[init][mid - init : mid + init + 1])
+        answer += sum(board[N - init - 1][mid - init: mid + init + 1])
+        init += 1
+
+    return answer
 
 T = int(input())
 for seq in range(T):
-    length = int(input())
-    board = [list(map(int, input().rstrip())) for _ in range(length)]
-    print(solution(seq + 1, length, board))
-    
+    N = int(input())
+    board = [list(map(int, input().rstrip())) for _ in range(N)]
+    print(f'#{seq + 1} {solution(N, board)}')
