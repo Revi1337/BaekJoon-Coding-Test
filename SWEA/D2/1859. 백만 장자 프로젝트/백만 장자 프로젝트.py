@@ -1,13 +1,12 @@
 def solution(N, prices):
-    answer = start = 0
-    while start < N:
-        max_idx = start
-        for idx in range(start + 1, N):
-            if prices[idx] > prices[max_idx]:
-                max_idx = idx
-        for idx in range(start, max_idx + 1):
-            answer += prices[max_idx] - prices[idx]
-        start = max_idx + 1
+    max_price = prices[-1]
+    answer = 0
+    for price in prices[-2::-1]:
+        if price > max_price:
+            max_price = price
+            continue
+
+        answer += max_price - price
 
     return answer
 
