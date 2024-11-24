@@ -1,21 +1,20 @@
-def solution(idx, N, board):
-    answer1 = [[0] * N for _ in range(N)]
-    answer2 = [[0] * N for _ in range(N)]
-    answer3 = [[0] * N for _ in range(N)]
+def solution(N, board):
+    new_board = [[[0] * N for _ in range(N)] for _ in range(3)]
     for row in range(N):
         for col in range(N):
-            answer1[col][N - 1 - row] = board[row][col] # 90
-            answer2[N - 1 - row][N - 1 - col] = board[row][col] # 180
-            answer3[N - 1 - col][row] = board[row][col] # 270
+            new_board[0][col][N - 1 - row] = board[row][col]
+            new_board[1][N - 1 - row][N - 1 - col] = board[row][col]
+            new_board[2][N - 1 - col][row] = board[row][col]
 
-    print(f'#{idx}')
-    for row in range(N):
-        print("".join(map(str, answer1[row])), end = ' ')
-        print("".join(map(str, answer2[row])), end = ' ')
-        print("".join(map(str, answer3[row])))
+    answer = list(zip(*new_board))
+    for ans in answer:
+        for line in ans:
+            print("".join(map(str, line)), end = ' ')
+        print()
 
 T = int(input())
-for idx in range(T):
+for seq in range(T):
     N = int(input())
     board = [list(map(int, input().split())) for _ in range(N)]
-    solution(idx + 1, N, board)
+    print(f'#{seq + 1}')
+    solution(N, board)
