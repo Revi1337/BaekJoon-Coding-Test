@@ -17,7 +17,7 @@ def solution(board):
 
     return answer
 
-T = 1
+T = 10
 for _ in range(T):
     seq = int(input())
     board = [list(input().rstrip()) for _ in range(100)]
