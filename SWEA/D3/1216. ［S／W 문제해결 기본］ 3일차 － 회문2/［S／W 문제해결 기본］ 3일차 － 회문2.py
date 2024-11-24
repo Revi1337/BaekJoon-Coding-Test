@@ -3,8 +3,14 @@ def solution(board):
     def is_pal(b, length):
         for line in b:
             for idx in range(100 - length + 1):
-                if line[idx : idx + length] == line[idx : idx + length][::-1]:
+                # if line[idx : idx + length] == line[idx : idx + length][::-1]:
+                #     return True
+                for offset in range(length // 2):
+                    if line[idx + offset] != line[idx + length - 1 - offset]:
+                        break
+                else:
                     return True
+
         return False
 
     new_board = list(zip(*board))
