@@ -1,18 +1,27 @@
-def solution(idx, N, K, board):
-    lst = []
-    for col in range(N):
-        lst.append("".join(map(str, [tmp[col] for tmp in board])))
-        lst.append("".join(map(str, board[col])))
-    answer = 0
-    for string in lst:
-        tmp = string.split('0')
-        for seq in tmp:
-            if sum(map(int, list(seq))) == K:
-                answer += 1
-    return f'#{idx} {answer}'
+def solution(N, K, board):
+    rev_board = list(map(list, zip(*board)))
+
+    def count(board):
+        counter = 0
+        for line in board:
+            possible = 0
+            for idx in range(N):
+                if line[idx] == 1:
+                    possible += 1
+                else:
+                    if possible == K:
+                        counter += 1
+                    possible = 0
+            if possible == K:
+                counter += 1
+        return counter
+
+    answer = count(board) + count(rev_board)
+    return answer
+
 
 T = int(input())
-for idx in range(T):
+for seq in range(T):
     N, K = map(int, input().split())
     board = [list(map(int, input().split())) for _ in range(N)]
-    print(solution(idx + 1, N, K, board))
+    print(f'#{seq + 1} {solution(N, K, board)}')
