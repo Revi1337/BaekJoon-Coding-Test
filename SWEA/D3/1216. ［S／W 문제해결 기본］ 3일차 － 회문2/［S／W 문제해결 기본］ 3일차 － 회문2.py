@@ -1,21 +1,18 @@
 def solution(board):
-    answer = 1
-    for line in board:
-        for length in range(2, 101):
+
+    def is_pal(b, length):
+        for line in b:
             for idx in range(100 - length + 1):
-                string = line[idx : idx + length + 1]
-                if string == string[::-1]:
-                    answer = max(answer, len(string))
+                if line[idx : idx + length] == line[idx : idx + length][::-1]:
+                    return True
+        return False
 
     new_board = list(zip(*board))
-    for line in new_board:
-        for length in range(2, 101):
-            for idx in range(100 - length + 1):
-                string = line[idx : idx + length + 1]
-                if string == string[::-1]:
-                    answer = max(answer, len(string))
+    for length in range(100, 1, -1):
+        if is_pal(board, length) or is_pal(new_board, length):
+            return length
 
-    return answer
+    return 1
 
 T = 10
 for _ in range(T):
