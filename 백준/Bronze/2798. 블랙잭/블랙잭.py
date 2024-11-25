@@ -1,10 +1,15 @@
-n, m = map(int, input().split())
-numbers = list(map(int, input().split()))
-answer = []
-for i in range(n - 2):
-    for j in range(i + 1, n - 1):
-        for r in range(j + 1, n):
-            value = numbers[i] + numbers[j] + numbers[r]
-            if value <= m:
-                answer.append(value)
-print(max(answer))
+def solution(N, M, cards):
+    possible = []
+    for i in range(N):
+        for j in range(i + 1, N):
+            for k in range(j + 1, N):
+                cost = cards[i] + cards[j] + cards[k]
+                if cost <= M:
+                    possible.append(cost)
+
+    return max(possible)
+
+
+N, M = map(int, input().split())
+cards = list(map(int, input().split()))
+print(solution(N, M, cards))
