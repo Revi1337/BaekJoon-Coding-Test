@@ -1,9 +1,10 @@
 def solution(n):
-    answer = 0
-    for height in range(1, n + 1):
-        for width in range(height, n + 1):
-            if height * width <= n:
-                answer += 1
+    answer = n
+    for height in range(2, n):
+        count = (n // height) - (height - 1)
+        if count < 1:
+            break
+        answer += count
 
     return answer
 
