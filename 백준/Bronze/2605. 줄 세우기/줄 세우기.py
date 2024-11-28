@@ -1,12 +1,9 @@
 def solution(N, students):
     answer = []
     for idx in range(N):
-        answer = answer[:idx - students[idx]] + [idx] + answer[idx - students[idx]:]
+        answer.insert(students[idx], idx + 1)
 
-    for idx in range(N):
-        answer[idx] += 1
-
-    print(*answer)
+    print(*answer[::-1])
 
 N = int(input())
 students = list(map(int, input().split()))
