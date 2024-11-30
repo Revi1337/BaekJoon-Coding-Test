@@ -1,54 +1,47 @@
-import sys
+drow = [-1, 0, 1, 0]
+dcol = [0, 1, 0, -1]
 
-input = sys.stdin.readline
+def solution(N, board):
 
-def solution(N, c):
-    drow = [-1, 0, 1, 0]
-    dcol = [0, 1, 0, -1]
-    answer = -1e9
-
-    def inboard(nrow, ncol):
-        return (0 <= nrow < N) and (0 <= ncol < N)
-
-    def valid(row, col, nrow, ncol):
-        return inboard(nrow, ncol) and (c[row][col] != c[nrow][ncol])
-
-    def action():
-        row_cnt = col_cnt = 1
-        row_max = col_max = -1e9
-        for ro in range(N):
-            for co in range(N - 1):
-                if c[ro][co] == c[ro][co + 1]:
-                    row_cnt += 1
+    def count_eat():
+        eatable = 0
+        for line in board:
+            prev, count = line[0], 1
+            for idx in range(1, N):
+                if line[idx] == prev:
+                    count += 1
                 else:
-                    row_cnt = 1
-                row_max = max(row_max, row_cnt)
-            row_cnt = 1
-        for co in range(N):
-            for ro in range(N - 1):
-                if c[ro][co] == c[ro + 1][co]:
-                    col_cnt += 1
+                    eatable = max(eatable, count)
+                    prev = line[idx]
+                    count = 1
+            eatable = max(eatable, count)
+
+        for col in range(N):
+            prev, count = board[0][col], 1
+            for line in board[1:]:
+                if line[col] == prev:
+                    count += 1
                 else:
-                    col_cnt = 1
-                col_max = max(col_max, col_cnt)
-            col_cnt = 1
+                    eatable = max(eatable, count)
+                    prev = line[col]
+                    count = 1
+            eatable = max(eatable, count)
 
-        return max(row_max, col_max)
+        return eatable
 
-
+    answer = 0
     for row in range(N):
         for col in range(N):
             for d in range(4):
-                nrow = row + drow[d]
-                ncol = col + dcol[d]
-                if not valid(row, col, nrow, ncol):
-                    continue
-                c[row][col], c[nrow][ncol] = c[nrow][ncol], c[row][col]
-                answer = max(answer, action())
-                c[nrow][ncol], c[row][col] = c[row][col], c[nrow][ncol]
+                nrow, ncol = row + drow[d], col + dcol[d]
+                if 0 <= nrow < N and 0 <= ncol < N and board[row][col] != board[nrow][ncol]:
+                    board[row][col], board[nrow][ncol] = board[nrow][ncol], board[row][col]
+                    answer = max(answer, count_eat())
+                    board[row][col], board[nrow][ncol] = board[nrow][ncol], board[row][col]
 
     return answer
 
-N = int(input().rstrip())
-c = [list(input().rstrip()) for _ in range(N)]
-print(solution(N, c))
+
+N = int(input())
+board = [list(input().rstrip()) for _ in range(N)]
+print(solution(N, board))
