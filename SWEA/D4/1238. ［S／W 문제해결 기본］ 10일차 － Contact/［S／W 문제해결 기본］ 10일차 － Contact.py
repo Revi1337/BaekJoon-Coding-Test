@@ -9,19 +9,17 @@ def solution(N, S, datas):
 
     check = [0] * (max_num + 1)
     check[S] = 1
+    answer = S
     queue = deque([S])
+
     while queue:
         node = queue.popleft()
+        if check[node] > check[answer] or (check[answer] == check[node] and answer < node):
+            answer = node
         for next_node in graph[node]:
             if not check[next_node]:
                 check[next_node] = check[node] + 1
                 queue.append(next_node)
-
-    max_distance = max(check)
-    answer = 0
-    for idx in range(1, max_num + 1):
-        if check[idx] == max_distance:
-            answer = idx
 
     return answer
 
