@@ -1,32 +1,32 @@
 from collections import deque
 
-def solution(size, entry, edges):
-    max_vertext = max(edges)
-    graph = [[] for _ in range(max_vertext + 1)]
-    for idx in range(0, len(edges), 2):
-        graph[edges[idx]].append(edges[idx + 1])
+def solution(N, S, datas):
+    max_num = max(datas)
+    graph = [[] for _ in range(max_num + 1)]
+    for idx in range(0, N, 2):
+        fro, to = datas[idx], datas[idx + 1]
+        graph[fro].append(to)
 
-    distance = [0] * (max_vertext + 1)
-    distance[entry] = 1
-    queue = deque([entry])
+    check = [0] * (max_num + 1)
+    check[S] = 1
+    queue = deque([S])
     while queue:
-        vertext = queue.popleft()
-        for next_vertext in graph[vertext]:
-            if not distance[next_vertext]:
-                distance[next_vertext] = distance[vertext] + 1
-                queue.append(next_vertext)
+        node = queue.popleft()
+        for next_node in graph[node]:
+            if not check[next_node]:
+                check[next_node] = check[node] + 1
+                queue.append(next_node)
 
-    max_distance = max(distance)
-    answer = None
-    for vertext in range(max_vertext + 1):
-        if distance[vertext] == max_distance:
-            answer = vertext
+    max_distance = max(check)
+    answer = 0
+    for idx in range(1, max_num + 1):
+        if check[idx] == max_distance:
+            answer = idx
 
     return answer
 
-
 T = 10
-for index in range(T):
-    size, entry = map(int, input().split())
-    edges = list(map(int, input().split()))
-    print(f'#{index + 1} {solution(size, entry, edges)}')
+for seq in range(T):
+    N, S = map(int, input().split())
+    datas = list(map(int, input().split()))
+    print(f'#{seq + 1} {solution(N, S, datas)}')
