@@ -16,8 +16,8 @@ def solution(N, board):
             distance = dis
             for d in range(4):
                 nrow, ncol = row + drow[d], col + dcol[d]
-                if (0 <= nrow < N) and (0 <= ncol < N):
-                    if (board[nrow][ncol] - board[row][col] == 1) and (not check[nrow][ncol]):
+                if 0 <= nrow < N and 0 <= ncol < N:
+                    if board[nrow][ncol] - board[row][col] == 1 and not check[nrow][ncol]:
                         check[nrow][ncol] = check[row][col] + 1
                         queue.append((nrow, ncol, dis + 1))
 
