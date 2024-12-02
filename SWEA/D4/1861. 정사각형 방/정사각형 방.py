@@ -4,30 +4,33 @@ drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
 def solution(N, board):
-    possible = []
 
+    def bfs(r, c):
+        queue = deque([(r, c, 1)])
+        check = [[0] * N for _ in range(N)]
+        check[r][c] = 1
+        distance = 1
+
+        while queue:
+            row, col, dis = queue.popleft()
+            distance = max(distance, dis)
+            for d in range(4):
+                nrow, ncol = row + drow[d], col + dcol[d]
+                if 0 <= nrow < N and 0 <= ncol < N:
+                    if board[nrow][ncol] - board[row][col] == 1 and not check[nrow][ncol]:
+                        check[nrow][ncol] = check[row][col] + 1
+                        queue.append((nrow, ncol, dis + 1))
+
+        return distance
+
+    collect = []
     for row in range(N):
         for col in range(N):
-            queue = deque([(row, col, 1)])
-            check = [[0] * N for _ in range(N)]
-            check[row][col] = 1
-            distance = 1
+            collect.append((board[row][col], bfs(row, col)))
 
-            while queue:
-                r, c, dis = queue.popleft()
-                distance = max(distance, dis)
-                for d in range(4):
-                    nrow, ncol = r + drow[d], c + dcol[d]
-                    if 0 <= nrow < N and 0 <= ncol < N:
-                        if board[nrow][ncol] - board[r][c] == 1 and not check[nrow][ncol]:
-                            check[nrow][ncol] = check[r][c] + 1
-                            queue.append((nrow, ncol, dis + 1))
-
-            possible.append((board[row][col], distance))
-
-    max_answer = max(possible, key=lambda x: x[1])
+    max_answer = max(collect, key=lambda x: x[1])
     answers = []
-    for ans in possible:
+    for ans in collect:
         if ans[1] == max_answer[1]:
             answers.append(ans)
 
