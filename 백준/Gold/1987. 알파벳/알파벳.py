@@ -1,35 +1,27 @@
-import sys
-
-input = sys.stdin.readline
-
-"""
-알파벳 (https://www.acmicpc.net/problem/1987)
-2024-09-11
-"""
-
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution2(R, C, boards):
+def solution(R, C, board):
 
-    def dfs(row, col, counter):
+    def dfs(row, col, curr, count):
         nonlocal answer
-        answer = max(answer, counter)
+        answer = max(answer, count)
         for d in range(4):
             nrow, ncol = row + drow[d], col + dcol[d]
-            if 0 <= nrow < R and 0 <= ncol < C:
-                if cache[(65 - ord(boards[nrow][ncol])) % 26] == 0:
-                    cache[(65 - ord(boards[nrow][ncol])) % 26] = 1
-                    dfs(nrow, ncol, counter + 1)
-                    cache[(65 - ord(boards[nrow][ncol])) % 26] = 0
+            if 0 <= nrow < R and 0 <= ncol < C and not cache[ord(board[nrow][ncol]) - 65]:
+                cache[ord(board[nrow][ncol]) - 65] = 1
+                count += 1
+                dfs(nrow, ncol, curr, count)
+                count -= 1
+                cache[ord(board[nrow][ncol]) - 65] = 0
 
-    answer = 1
     cache = [0] * 26
-    cache[(65 - ord(boards[0][0])) % 26] = 1
-    dfs(0, 0, 1)
+    cache[ord(board[0][0]) - 65] = 1
+    answer = 1
+    dfs(0, 0, cache, 1)
 
     return answer
 
 R, C = map(int, input().split())
-boards = [list(input().rstrip()) for _ in range(R)]
-print(solution2(R, C, boards))
+board = [list(input().rstrip()) for _ in range(R)]
+print(solution(R, C, board))
