@@ -1,24 +1,18 @@
 def solution(day, mon, mon3, year, prices):
     prices = [0] + prices
-    answer = 3000 * 12
 
-    def backtracking(n, sm):
-        nonlocal answer
-        if answer <= sm:
-            return
+    D = [0] * 13
+    for month in range(1, 13):
+        mn = D[month - 1] + prices[month] * day # 일일권
+        mn = min(mn, D[month - 1] + mon) # 월간권과 비교
+        if month >= 3:
+            mn = min(mn, D[month - 3] + mon3)
+        if month >= 12:
+            mn = min(mn, D[month - 12] + year)
 
-        if n > 12:
-            answer = min(answer, sm)
-            return
+        D[month] = mn
 
-        backtracking(n + 1, sm + day * prices[n])
-        backtracking(n + 1, sm + mon)
-        backtracking(n + 3, sm + mon3)
-        backtracking(n + 12, sm + year)
-
-    backtracking(1, 0)
-
-    return answer
+    return D[12]
 
 T = int(input())
 for seq in range(T):
