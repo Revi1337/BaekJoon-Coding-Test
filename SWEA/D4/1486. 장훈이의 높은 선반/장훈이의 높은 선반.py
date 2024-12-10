@@ -1,9 +1,12 @@
 def solution(N, B, S):
 
     def backtracking(n, sm):
+        nonlocal answer
+        if sm >= answer: # cut edge
+            return
+
         if n == N:
             if sm >= B:
-                nonlocal answer
                 answer = min(answer, sm)
             return
         backtracking(n + 1, sm + S[n])
