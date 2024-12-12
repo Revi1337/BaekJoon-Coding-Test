@@ -1,24 +1,25 @@
-def solution(seq, N):
+def solution(N):
 
-    answer = 0
-    v1, v2, v3 = [[0] * (2 * N) for _ in range(3)] # [0, 0, 0, 0, 0, 0] 을 3 개 초기화하여 Unpack
-
-    def dfs(queen):
-        if queen == N:
+    def backtracking(n):
+        if n == N:
             nonlocal answer
             answer += 1
             return
-        for col in range(N):
-            if v1[col] == v2[queen + col] == v3[queen - col] == 0:
-                v1[col] = v2[queen + col] = v3[queen - col] = 1
-                dfs(queen + 1)
-                v1[col] = v2[queen + col] = v3[queen - col] = 0 # 원상 복구
+        for idx in range(N):
+            if v1[idx] == v2[n + idx] == v3[n - idx] == 0:
+                v1[idx] = v2[n + idx] = v3[n - idx] = 1
+                backtracking(n + 1)
+                v1[idx] = v2[n + idx] = v3[n - idx] = 0
 
-    dfs(0)
+    answer = 0
+    v1 = [0] * N
+    v2 = [0] * (2 * N) # 좌하 -> 우상 대각선 (row + col)
+    v3 = [0] * (2 * N) # 우상 -> 좌하 대각선 (row - col)
+    backtracking(0)
 
-    return f'#{seq} {answer}'
+    return answer
 
 T = int(input())
 for seq in range(T):
     N = int(input())
-    print(solution(seq + 1, N))
+    print(f'#{seq + 1} {solution(N)}')
