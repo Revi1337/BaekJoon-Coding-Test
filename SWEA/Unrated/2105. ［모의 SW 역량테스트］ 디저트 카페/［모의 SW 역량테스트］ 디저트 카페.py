@@ -1,5 +1,5 @@
-drow = [1, 1, -1, -1]
-dcol = [-1, 1, 1, -1]
+drow = [1, 1, -1, -1, 1]
+dcol = [-1, 1, 1, -1, -1]
 
 def solution(N, board):
 
@@ -10,7 +10,7 @@ def solution(N, board):
         if d == 3 and (r, c) == (row, col):
             answer = max(answer, len(lst))
             return
-        for nd in range(d, min(d + 2, 4)):
+        for nd in range(d, d + 2):
             nr, nc = r + drow[nd], c + dcol[nd]
             if 0 <= nr < N and 0 <= nc < N and board[nr][nc] not in lst:
                 lst.append(board[nr][nc])
