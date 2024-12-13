@@ -5,6 +5,8 @@ def solution(N, board):
 
     def backtracking(d, r, c, lst):
         nonlocal answer
+        if d == 2 and len(lst) * 2 <= answer:
+            return
         if d > 3:
             return
         if d == 3 and (r, c) == (row, col):
