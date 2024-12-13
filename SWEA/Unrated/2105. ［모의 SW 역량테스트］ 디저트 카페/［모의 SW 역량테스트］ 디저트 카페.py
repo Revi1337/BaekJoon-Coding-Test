@@ -1,26 +1,26 @@
-drow = [1, 1, -1, -1, 1]
-dcol = [-1, 1, 1, -1, -1]
+drow = [1, 1, -1, -1]
+dcol = [-1, 1, 1, -1]
 
 def solution(N, board):
 
-    def backtracking(d, r, c, lst):
+    def backtracking(d, r, c, check):
+        nonlocal answer
         if d > 3:
             return
         if d == 3 and (r, c) == (row, col):
-            nonlocal answer
-            answer = max(answer, len(lst))
+            answer = max(answer, len(check))
             return
-        for nd in range(d, d + 2):
+        for nd in range(d, min(d + 2, 4)):
             nr, nc = r + drow[nd], c + dcol[nd]
-            if 0 <= nr < N and 0 <= nc < N and board[nr][nc] not in lst:
-                lst.append(board[nr][nc])
-                backtracking(nd, nr, nc, lst)
-                lst.pop()
+            if 0 <= nr < N and 0 <= nc < N and board[nr][nc] not in check:
+                check.add(board[nr][nc])
+                backtracking(nd, nr, nc, check)
+                check.discard(board[nr][nc])
 
     answer = -1
     for row in range(N - 2):
         for col in range(N - 1):
-            backtracking(0, row, col, [])
+            backtracking(0, row, col, set())
 
     return answer
 
