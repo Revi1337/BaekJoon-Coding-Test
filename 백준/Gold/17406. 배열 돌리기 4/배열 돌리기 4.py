@@ -1,18 +1,27 @@
-from itertools import permutations
-
 # 우, 하, 좌, 상
 drow = [0, 1, 0, -1]
 dcol = [1, 0, -1, 0]
 
 def solution(N, M, K, board, rots):
+
+    def backtracking(n, seq):
+        if n == K:
+            lst = []
+            for num in seq:
+                lst.append(rots[num])
+            perm.append(lst)
+            return
+        for num in range(K):
+            if num not in seq:
+                seq.append(num)
+                backtracking(n + 1, seq)
+                seq.pop()
+
     perm = []
-    for i in range(K):
-        for j in range(K):
-            if i != j:
-                perm.append([rots[i], rots[j]])
+    backtracking(0, [])
 
     answer = 1e9
-    for rotators in permutations(rots, K):
+    for rotators in perm:
         n_board = [[*line] for line in board]
         for rr, rc, t in rotators:
             to, fro = [rr - t - 1, rc - t - 1], [rr + t - 1, rc + t - 1]
