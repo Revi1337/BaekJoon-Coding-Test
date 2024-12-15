@@ -1,37 +1,39 @@
 from itertools import permutations
-import copy
 
 # 우, 하, 좌, 상
 drow = [0, 1, 0, -1]
 dcol = [1, 0, -1, 0]
 
-def rotate(board, r, c, s):
-    for layer in range(1, s + 1):
-        row, col = r - layer, c - layer
-        prev = board[row][col]
-        for d in range(4):
-            while True:
-                nrow, ncol = row + drow[d], col + dcol[d]
-                if nrow < r - layer or nrow > r + layer or ncol < c - layer or ncol > c + layer:
-                    break
-                board[nrow][ncol], prev = prev, board[nrow][ncol]
-                row, col = nrow, ncol
-
-def get_min_row_sum(board):
-    return min(sum(row) for row in board)
+def rotate(n_board, rr, rc, t):
+    to, fro = [rr - t - 1, rc - t - 1], [rr + t - 1, rc + t - 1]
+    offset = 0
+    while offset < t:
+        row, col, d = to[0], to[1] + 1, 0
+        prev = n_board[to[0]][to[1]]
+        while [row, col] != to:
+            nrow, ncol = row + drow[d], col + dcol[d]
+            if not (to[0] <= nrow <= fro[0] and to[1] <= ncol <= fro[1]):
+                d = (d + 1) % 4
+                continue
+            n_board[row][col], prev = prev, n_board[row][col]
+            row, col = nrow, ncol
+        n_board[row][col] = prev
+        offset += 1
+        to = [to[0] + 1, to[1] + 1]
+        fro = [fro[0] - 1, fro[1] - 1]
 
 def solution(N, M, K, board, rots):
     answer = float('inf')
-    for order in permutations(rots):
-        n_board = copy.deepcopy(board)
-        for r, c, s in order:
-            rotate(n_board, r - 1, c - 1, s)
-        answer = min(answer, get_min_row_sum(n_board))
+    for rotators in permutations(rots, K):
+        n_board = [[*line] for line in board]
+        for rr, rc, t in rotators:
+            rotate(n_board, rr, rc, t)
+        minN = min([sum(line) for line in n_board])
+        answer = min(answer, minN)
 
     return answer
 
 N, M, K = map(int, input().split())
 board = [list(map(int, input().split())) for _ in range(N)]
-rots = [tuple(map(int, input().split())) for _ in range(K)]
-
+rots = [list(map(int, input().split())) for _ in range(K)]
 print(solution(N, M, K, board, rots))
