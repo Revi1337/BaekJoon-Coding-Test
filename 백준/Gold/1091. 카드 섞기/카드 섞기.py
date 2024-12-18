@@ -1,30 +1,33 @@
-import sys
-from collections import defaultdict
-def input(): return sys.stdin.readline().rstrip()
+def solution(N, S, P):
+    player = [set() for _ in range(3)]
+    for c in range(N):
+        player[P[c]].add(c)
 
-n = int(input())
-P = list(map(int,input().split()))
-S = list(map(int,input().split()))
+    answer = 0
+    visited = set()
+    card = list(range(N))
+    while True:
+        mut_card = tuple(card)
+        if mut_card in visited:
+            return -1
+        visited.add(mut_card)
 
-answer = defaultdict(set)
-visited = set()
+        allmatch = True
+        for idx in range(N):
+            if not card[idx] in player[idx % 3]:
+                allmatch = False
+                break
+        if allmatch:
+            return answer
 
-for i in range(n):
-    answer[P[i]].add(i)
+        new_card = [0] * N
+        for idx in range(N):
+            new_card[S[idx]] = card[idx]
 
-cnt = 0
-cards = list(range(n))
-while True:
-    first,second,third = set(cards[0:n:3]), set(cards[1:n:3]), set(cards[2:n:3])
-    if first == answer[0] and second == answer[1] and third == answer[2]:
-        break
-    if tuple(cards) in visited:
-        cnt = -1
-        break
-    visited.add(tuple(cards))
-    temp = [0] * n
-    for i in range(n):
-        temp[S[i]] = cards[i]
-    cards = temp
-    cnt += 1
-print(cnt)
+        card = new_card
+        answer += 1
+
+N = int(input())
+P = list(map(int, input().split()))
+S = list(map(int, input().split()))
+print(solution(N, S, P))
