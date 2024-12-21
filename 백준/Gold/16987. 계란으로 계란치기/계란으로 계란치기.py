@@ -1,8 +1,10 @@
 def solution(N, eggs):
 
     def backtracking(n, breaked):
+        nonlocal answer
+        if breaked + (N - n) * 2 <= answer:
+            return
         if n == N:
-            nonlocal answer
             answer = max(answer, breaked)
             return
 
