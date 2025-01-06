@@ -7,10 +7,20 @@ def solution(N, M, R, array, opers):
         return [row[::-1] for row in arr]
 
     def third(arr):
-        return [list(row) for row in zip(*arr[::-1])]
+        N, M = len(arr), len(arr[0])
+        carr = [[0] * N for _ in range(M)]
+        for row in range(N):
+            for col in range(M):
+                carr[col][N - row - 1] = arr[row][col]
+        return carr
 
     def four(arr):
-        return [list(row) for row in zip(*arr)][::-1]
+        N, M = len(arr), len(arr[0])
+        carr = [[0] * N for _ in range(M)]
+        for row in range(N):
+            for col in range(M):
+                carr[M - col - 1][row] = arr[row][col]
+        return carr
 
     def five(arr):
         N, M = len(arr), len(arr[0])
