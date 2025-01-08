@@ -14,15 +14,14 @@ def solution(n, m, edges):
     queue = deque()
     for student, count in enumerate(counter[1:], start=1):
         if not count:
-            answer.append(student)
             queue.append(student)
 
     while queue:
         student = queue.popleft()
+        answer.append(student)
         for next_student in graph[student]:
             counter[next_student] -= 1
             if not counter[next_student]:
-                answer.append(next_student)
                 queue.append(next_student)
 
     return " ".join(map(str, answer))
