@@ -22,8 +22,9 @@ def solution(N, edges):
     for i1, i2 in edges:
         union(i1, i2)
 
-    for idx in range(2, N+ 1):
-        if find(1) != find(idx):
+    init = find(1)
+    for idx in range(2, N + 1):
+        if init != find(idx):
             print(1, idx)
             return
 
