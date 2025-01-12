@@ -9,23 +9,19 @@ def solution(N, edges):
 
     def union(i1, i2):
         r1, r2 = find(i1), find(i2)
-        if ranks[r1] < ranks[r2]:
-            island[r1] = r2
-        elif ranks[r1] > ranks[r2]:
+        if r1 < r2:
             island[r2] = r1
         else:
-            island[r2] = r1
-            ranks[r1] += 1
+            island[r1] = r2
 
     island = list(range(0, N + 1))
-    ranks = [0] * (N + 1)
     for i1, i2 in edges:
         union(i1, i2)
 
     init = find(1)
-    for idx in range(2, N + 1):
-        if init != find(idx):
-            print(1, idx)
+    for land in range(2, N + 1):
+        if init != find(land):
+            print(1, land)
             return
 
 N = int(input())
