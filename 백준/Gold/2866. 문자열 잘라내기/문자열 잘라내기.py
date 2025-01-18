@@ -7,7 +7,7 @@ def solution(R, C, words):
         return len(seen) == C
 
     answer = 0
-    left, right = 0, R - 1
+    left, right = 0, R
     while left <= right:
         mid = (left + right) // 2
         if is_valid(mid):
