@@ -9,8 +9,6 @@ def solution(seq, N, K, edges, M, relations):
 
     def union(n1, n2):
         root1, root2 = find(n1), find(n2)
-        if root1 == root2:
-            return
         if root2 > root1:
             tree[root2] = root1
         else:
