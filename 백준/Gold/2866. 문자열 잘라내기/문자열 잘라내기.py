@@ -1,13 +1,16 @@
 def solution(R, C, words):
+    
     def is_valid(mid):
-        seen = set()
+        cache = set()
         for col in range(C):
             string = "".join(words[row][col] for row in range(mid, R))
-            seen.add(string)
-        return len(seen) == C
+            if string in cache:
+                return False
+            cache.add(string)
+        return True
 
     answer = 0
-    left, right = 0, R
+    left, right = 0, R - 1
     while left <= right:
         mid = (left + right) // 2
         if is_valid(mid):
@@ -21,3 +24,4 @@ def solution(R, C, words):
 R, C = map(int, input().split())
 words = [input().rstrip() for _ in range(R)]
 print(solution(R, C, words))
+
