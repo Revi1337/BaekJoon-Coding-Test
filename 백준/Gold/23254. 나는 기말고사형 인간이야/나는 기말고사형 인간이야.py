@@ -1,9 +1,9 @@
 import heapq
 
 def solution(N, M, A, B):
-    time, answer, pq = 24 * N, 0, []
-    for idx in range(M):
-        heapq.heappush(pq, [-B[idx], A[idx]])
+    time, answer = 24 * N, 0
+    pq = [[-B[idx], A[idx]] for idx in range(M)]
+    heapq.heapify(pq)
 
     while pq and time != 0:
         unit, score = heapq.heappop(pq)
