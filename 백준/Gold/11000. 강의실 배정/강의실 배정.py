@@ -1,5 +1,8 @@
 import heapq
 
+'''
+먼저 시작한 것 중 먼저 끝난 것.
+'''
 def solution(N, classes):
     classes.sort()
     pq = [classes[0][1]]
