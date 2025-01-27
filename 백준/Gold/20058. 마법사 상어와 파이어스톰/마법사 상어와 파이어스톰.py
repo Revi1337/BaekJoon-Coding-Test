@@ -37,31 +37,27 @@ def solution(N, Q, ices, opers):
         for row, col in to_decrease:
             ices[row][col] -= 1
 
-    def rotate(futures, s):
-        rotated = [[0] * s for _ in range(s)]
-        for row in range(s):
-            for col in range(s):
-                rotated[col][s - 1 - row] = futures[row][col]
-        return rotated
+    def rotate(size):
+        
+        def rotate_grid(grid, size):
+            rotated = [[0] * size for _ in range(size)]
+            for r in range(size):
+                for c in range(size):
+                    rotated[c][size - 1 - r] = grid[r][c]
+            return rotated
 
-    def modify(r, s):
-        if r >= N:
-            return
-
-        for offset in range(N // s):
-            future = []
-            for row in ices[r : r + s]:
-                future.append(row[offset * s : (offset + 1) * s])
-
-            rotated = rotate(future, s)
-            for i in range(s):
-                for j in range(s):
-                    ices[r + i][offset * s + j] = rotated[i][j]
-        modify(r + s, s)
+        step = size
+        for r in range(0, N, step):
+            for c in range(0, N, step):
+                block = [ices[x][c:c + step] for x in range(r, r + step)]
+                rotated = rotate_grid(block, step)
+                for x in range(step):
+                    for y in range(step):
+                        ices[r + x][c + y] = rotated[x][y]
 
     for oper in opers:
         size = 2 ** oper
-        modify(0, size)
+        rotate(size)
         decrease_ice()
 
     total = sum(sum(row) for row in ices)
