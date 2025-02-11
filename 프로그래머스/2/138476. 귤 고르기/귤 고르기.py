@@ -8,12 +8,13 @@ def solution(k, tangerine):
         table[cnt] = table.get(cnt, [])
         table[cnt].append(gul)
         
-    answer = total = 0
-    counted = sorted(table, reverse = True)
+    answer = 0
+    counted = sorted(table, reverse=True)
     for cnt in counted:
-        kinds = table[cnt]
-        for _ in kinds:
-            total += cnt
+        for _ in table[cnt]:
+            k -= cnt
             answer += 1
-            if total >= k:
+            if k <= 0:
                 return answer
+                
+    return answer
