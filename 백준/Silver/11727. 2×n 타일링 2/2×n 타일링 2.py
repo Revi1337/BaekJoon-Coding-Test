@@ -1,12 +1,9 @@
-import sys
+def solution(N):
+    dp = [1] * (N + 1)
+    for idx in range(2, N + 1):
+        dp[idx] = dp[idx - 1] + dp[idx - 2] * 2
 
-input = sys.stdin.readline
+    return dp[N] % 10007
 
-def solution(n):
-    dp = [1] * (n + 1)
-    for block in range(2, n + 1):
-        dp[block] = dp[block - 1] + dp[block - 2] * 2
-    return dp[n] % 10_007
-
-n = int(input().rstrip())
-print(solution(n))
+N = int(input())
+print(solution(N))
