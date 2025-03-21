@@ -1,21 +1,19 @@
-import sys
+def solution(N, M, A):
+    answer = left = right = 0
+    sm = A[0]
 
-input = sys.stdin.readline
-
-def solution(n, m, numbers):
-    answer = 0
-    left, right = 0, 1
-    while left <= right <= n:
-        total = sum(numbers[left : right])
-        if total < m:
+    while left < N:
+        if sm < M and right + 1 < N:
             right += 1
-        elif total > m:
-            left += 1
+            sm += A[right]
         else:
-            answer += 1
-            right += 1
+            if sm == M:
+                answer += 1
+            sm -= A[left]
+            left += 1
+
     return answer
 
-n, m = map(int, input().split())
-numbers = list(map(int, input().split()))
-print(solution(n, m, numbers))
+N, M = map(int, input().split())
+A = list(map(int, input().split()))
+print(solution(N, M, A))
