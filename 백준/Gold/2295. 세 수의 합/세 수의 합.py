@@ -4,10 +4,10 @@ def solution(N, numbers):
     while numbers:
         num = numbers.pop()
         length = len(numbers)
-        for idx in range(length):
-            left, right = idx, length - 1
+        for mid in range(length):
+            left, right = mid, length - 1
             while left <= right:
-                sm = numbers[idx] + numbers[left] + numbers[right]
+                sm = numbers[left] + numbers[mid] + numbers[right]
                 if sm == num:
                     return num
                 if sm > num:
