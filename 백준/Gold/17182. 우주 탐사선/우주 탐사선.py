@@ -5,25 +5,27 @@ def solution(N, K, arr):
                 if arr[st][mid] + arr[mid][end] < arr[st][end]:
                     arr[st][end] = arr[st][mid] + arr[mid][end]
 
-    def backtracking(n, prev, sm):
-        if n == N:
-            nonlocal answer
-            answer = min(answer, sm)
-            return
+    INF = float('inf')
+    dp = [[INF] * N for _ in range(1 << N)]
+    dp[1 << K][K] = 0
 
-        for v in range(N):
-            if not check[v]:
-                check[v] = 1
-                backtracking(n + 1, v, sm + arr[prev][v])
-                check[v] = 0
+    for v in range(1 << N):
+        for c in range(N):
+            if dp[v][c] == INF:
+                continue
 
-    answer = 1000 * (N - 1)
-    check = [0] * N
-    check[K] = 1
-    backtracking(1, K, 0)
+            for n in range(N):
+                if v & (1 << n):
+                    continue
 
+                new_visited = v | (1 << n)
+                new_cost = dp[v][c] + arr[c][n]
+                if new_cost < dp[new_visited][n]:
+                    dp[new_visited][n] = new_cost
+
+    full_visited = (1 << N) - 1
+    answer = min(dp[full_visited])
     return answer
-
 
 N, K = map(int, input().split())
 arr = [list(map(int, input().split())) for _ in range(N)]
