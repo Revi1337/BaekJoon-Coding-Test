@@ -23,10 +23,7 @@ def solution(N, M, edges):
 
     for line in trace[1:]:
         for v in line[1:]:
-            if v == 0:
-                print('-', end = ' ')
-            else:
-                print(v, end = ' ')
+            print('-' if v == 0 else v, end = ' ')
         print()
 
 N, M = map(int, input().split())
