@@ -3,11 +3,13 @@ import heapq
 def solution(K, files):
     heapq.heapify(files)
     sm = 0
-    while len(files) != 2:
+    while K > 2:
         f1 = heapq.heappop(files)
         f2 = heapq.heappop(files)
+        K -= 2
         sm += f1 + f2
         heapq.heappush(files, f1 + f2)
+        K += 1
 
     return sm + sum(files)
 
