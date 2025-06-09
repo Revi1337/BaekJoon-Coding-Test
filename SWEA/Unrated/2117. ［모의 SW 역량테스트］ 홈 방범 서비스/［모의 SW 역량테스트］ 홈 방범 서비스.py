@@ -1,8 +1,6 @@
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-from collections import deque
-
 def solution(N, M, board):
     h = set()
     for row in range(N):
@@ -13,24 +11,18 @@ def solution(N, M, board):
     answer = 0
     for size in range(1, N + 2):
         cost = (size * size) + ((size -  1) ** 2)
+        k = size
         for row in range(N):
             for col in range(N):
-                limit = size - 1
-                check = {(row, col)}
-                queue = deque([(row, col)])
-                hcnt = 1 if board[row][col] else 0
-
-                while limit > 0:
-                    for _ in range(len(queue)):
-                        r, c = queue.popleft()
-                        for d in range(4):
-                            nrow, ncol = r + drow[d], c + dcol[d]
-                            if 0 <= nrow < N and 0 <= ncol < N and (nrow, ncol) not in check:
-                                queue.append((nrow, ncol))
-                                check.add((nrow, ncol))
-                                if board[nrow][ncol]:
-                                    hcnt += 1
-                    limit -= 1
+                hcnt = 0
+                for dr in range(-(k - 1), k):
+                    nr = row + dr
+                    if 0 <= nr < N:
+                        delta = (k - 1) - abs(dr)
+                        for dc in range(-delta, delta + 1):
+                            nc = col + dc
+                            if 0 <= nc < N and board[nr][nc] == 1:
+                                hcnt += 1
 
                 if (hcnt * M) - cost >= 0:
                     answer = max(answer, hcnt)
