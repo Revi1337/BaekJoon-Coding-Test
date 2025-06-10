@@ -6,28 +6,23 @@ def solution(N, opers, nums):
             mn, mx = min(mn, sm), max(mx, sm)
             return
 
-        if opers[0]:
-            opers[0] -= 1
-            backtrack(n + 1, sm + nums[n + 1])
-            opers[0] += 1
-        if opers[1]:
-            opers[1] -= 1
-            backtrack(n + 1, sm - nums[n + 1])
-            opers[1] += 1
-        if opers[2]:
-            opers[2] -= 1
-            backtrack(n + 1, sm * nums[n + 1])
-            opers[2] += 1
-        if opers[3]:
-            opers[3] -= 1
-            backtrack(n + 1, int(sm / nums[n + 1]))
-            opers[3] += 1
+        for idx in range(4):
+            if opers[idx]:
+                opers[idx] -= 1
+                if idx == 0:
+                    backtrack(n + 1, sm + nums[n + 1])
+                elif idx == 1:
+                    backtrack(n + 1, sm - nums[n + 1])
+                elif idx == 2:
+                    backtrack(n + 1, sm * nums[n + 1])
+                else:
+                    backtrack(n + 1, int(sm / nums[n + 1]))
+                opers[idx] += 1
 
     mn, mx = 1e9, -1e9
     backtrack(0, nums[0])
 
     return mx - mn
-
 
 T = int(input())
 for t in range(1, T + 1):
