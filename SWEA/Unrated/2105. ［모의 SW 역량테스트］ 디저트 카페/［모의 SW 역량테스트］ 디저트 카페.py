@@ -1,5 +1,5 @@
-drow = [1, 1, -1, -1, 1]
-dcol = [-1, 1, 1, -1, -1]
+drow = [1, 1, -1, -1]
+dcol = [-1, 1, 1, -1]
 
 def solution(N, board):
 
@@ -13,16 +13,17 @@ def solution(N, board):
             answer = max(answer, len(lst))
             return
         for nd in range(d, d + 2):
+            nd = nd % 4
             nr, nc = r + drow[nd], c + dcol[nd]
             if 0 <= nr < N and 0 <= nc < N and board[nr][nc] not in lst:
-                lst.append(board[nr][nc])
+                lst.add(board[nr][nc])
                 backtracking(nd, nr, nc, lst)
-                lst.pop()
+                lst.discard(board[nr][nc])
 
     answer = -1
     for row in range(N - 2):
         for col in range(N - 1):
-            backtracking(0, row, col, [])
+            backtracking(0, row, col, set())
 
     return answer
 
