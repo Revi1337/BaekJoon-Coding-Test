@@ -1,21 +1,27 @@
-def solution(day, mon, mon3, year, prices):
-    prices = [0] + prices
+def solution(costs, months):
+    answer = [1e9] * 12
+    answer.extend([0] * 4)
+    for month in range(11, -1, -1):
+        for idx in range(4):
+            if not months[month]:
+                answer[month] = answer[month + 1]
+                continue
 
-    D = [0] * 13
-    for month in range(1, 13):
-        mn = D[month - 1] + prices[month] * day # 일일권
-        mn = min(mn, D[month - 1] + mon) # 월간권과 비교
-        if month >= 3:
-            mn = min(mn, D[month - 3] + mon3)
-        if month >= 12:
-            mn = min(mn, D[month - 12] + year)
+            tmp = 1e9
+            for idx in range(3):
+                if idx == 0:
+                    tmp = min(tmp, costs[idx] * months[month] + answer[month + 1])
+                elif idx == 1:
+                    tmp = min(tmp, costs[idx] + answer[month + 1])
+                elif idx == 2:
+                    for m in range(month + 1, month + 4):
+                        tmp = min(tmp, costs[idx] + answer[m])
+            answer[month] = tmp
 
-        D[month] = mn
-
-    return D[12]
+    return min(answer[0], costs[3])
 
 T = int(input())
-for seq in range(T):
-    day, mon, mon3, year = map(int, input().split())
-    prices = list(map(int, input().split()))
-    print(f'#{seq + 1} {solution(day, mon, mon3, year, prices)}')
+for t in range(1, T + 1):
+    costs = list(map(int, input().split()))
+    months = list(map(int, input().split()))
+    print(f'#{t} {solution(costs, months)}')
