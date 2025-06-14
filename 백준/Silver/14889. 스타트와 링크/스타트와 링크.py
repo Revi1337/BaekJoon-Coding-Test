@@ -11,6 +11,7 @@ def solution(N, board):
                 nonlocal answer
                 answer = min(answer, abs(sm1 - sm2))
             return
+
         backtracking(n + 1, scnt + 1, lcnt, slst + [n], llst)
         backtracking(n + 1, scnt, lcnt + 1, slst, llst + [n])
 
