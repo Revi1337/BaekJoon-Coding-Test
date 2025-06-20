@@ -1,46 +1,39 @@
-import sys
 from collections import deque
-
-input = sys.stdin.readline
 
 drow = [0, 1, 0, -1]
 dcol = [1, 0, -1, 0]
 
-def solution(n, k, apple, l, d):
-    time_dict = {int(key): value for (key, value) in d}
-    board = [[0] * (n + 1) for _ in range(n + 1)]
-    for row, col in apple:
-        board[row][col] = 1
+def solution(N, K, A, L, D):
+    answer = dir = 0
+    tdic = {int(t): d for t, d in D}
+    A = set((row, col) for row, col in A)
 
-    nrow, ncol, dir = 1, 1, 0
-    snake = deque()
-    sec = 0
+    S = deque([(1, 1)])
     while True:
-        snake.append((nrow, ncol))
-        sec += 1
+        answer += 1
+        row, col = S[-1]
 
-        nrow += drow[dir]
-        ncol += dcol[dir]
+        nrow, ncol = row + drow[dir], col + dcol[dir]
+        if not (1 <= nrow <= N and 1 <= ncol <= N):
+            return answer
+        if (nrow, ncol) in S:
+            return answer
 
-        if nrow < 1 or nrow >= n + 1 or ncol < 1 or ncol >= n + 1 or board[nrow][ncol] == 2:
-            break
+        S.append((nrow, ncol))
+        if (nrow, ncol) not in A:
+            S.popleft()
+        else:
+            A.discard((nrow, ncol))
 
-        if not board[nrow][ncol]:
-            i, j = snake.popleft()
-            board[i][j] = 0
-
-        board[nrow][ncol] = 2
-
-        if sec in time_dict:
-            if time_dict[sec] == 'D':
-                dir = (dir + 1) % 4
-            else:
+        if answer in tdic:
+            if tdic[answer] == 'L':
                 dir = (dir - 1) % 4
-    return sec
+            else:
+                dir = (dir + 1) % 4
 
-n = int(input().rstrip())
-k = int(input().rstrip())
-apple = [list(map(int, input().split())) for _ in range(k)]
-l = int(input().rstrip())
-d = [input().rstrip().split() for _ in range(l)]
-print(solution(n, k, apple, l, d))
+N = int(input())
+K = int(input())
+A = [list(map(int, input().split())) for _ in range(K)]
+L = int(input())
+D = [input().split() for _ in range(L)]
+print(solution(N, K, A, L, D))
