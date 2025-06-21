@@ -1,9 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 /**
  * https://www.acmicpc.net/problem/1181
@@ -11,8 +7,9 @@ import java.util.Arrays;
 public class Main {
 
     public static void solution(String[] words) {
-        words = Arrays.stream(words).distinct().toArray(String[]::new);
-        Arrays.sort(words, (s1, s2) -> {
+        Set<String> set = new HashSet<>(Arrays.asList(words));
+        String[] uniqueWords = set.toArray(new String[0]);
+        Arrays.sort(uniqueWords, (s1, s2) -> {
             int s1Len = s1.length();
             int s2Len = s2.length();
 
@@ -22,7 +19,7 @@ public class Main {
             return s1.compareTo(s2);
         });
 
-        for (String word : words) {
+        for (String word : uniqueWords) {
             System.out.println(word);
         }
     }
