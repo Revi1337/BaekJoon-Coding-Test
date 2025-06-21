@@ -29,7 +29,10 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(input));
 
         int N = Integer.parseInt(br.readLine());
-        String[] words = br.lines().limit(N).toArray(String[]::new);
+        String[] words = new String[N];
+        for (int i = 0; i < N; i++) {
+            words[i] = br.readLine();
+        }
         solution(N, words);
     }
 }
