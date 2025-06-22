@@ -10,16 +10,11 @@ import java.io.InputStreamReader;
 public class Main {
 
     public static int solution(String delimiter, int N, String[] words) {
-        int dLength = delimiter.length();
         int answer = 0;
         for (String word : words) {
-            int length = word.length();
             word = word.repeat(2);
-            for (int i = 0; i < length; i++) {
-                if (word.substring(i, i + dLength).equals(delimiter)) {
-                    answer++;
-                    break;
-                }
+            if (word.contains(delimiter)) {
+                answer++;
             }
         }
 
