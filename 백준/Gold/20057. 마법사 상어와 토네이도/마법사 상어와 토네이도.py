@@ -12,19 +12,21 @@ def solution(N, board):
     inside = lambda row, col: 0 <= row < N and 0 <= col < N
 
     def spread(srow, scol, d):
-        out = 0
+        used = out = 0
         curr = board[srow][scol]
 
         for dr, dc, ratio in rates[d]:
             nrow, ncol = srow + dr, scol + dc
             mv = int(curr * ratio)
+            used += mv
             if inside(nrow, ncol):
                 board[nrow][ncol] += mv
             else:
                 out += mv
 
+        remain = curr - used
+
         nrow, ncol = srow + drow[d], scol + dcol[d]
-        remain = curr - sum(int(curr * r[2]) for r in rates[d])
         if inside(nrow, ncol):
             board[nrow][ncol] += remain
         else:
