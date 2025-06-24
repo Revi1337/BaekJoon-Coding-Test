@@ -3,75 +3,69 @@ from collections import deque
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(N, Q, ices, opers):
-    N = 2 ** N
+def solution(N, Q, board, oper):
 
-    def bfs(srow, scol):
-        queue = deque([(srow, scol)])
-        check[srow][scol] = 1
-        cnt = 1
+    S = 2 ** N
+    inside = lambda row, col: 0 <= row < S and 0 <= col < S
 
-        while queue:
-            row, col = queue.popleft()
-            for d in range(4):
-                nrow, ncol = row + drow[d], col + dcol[d]
-                if 0 <= nrow < N and 0 <= ncol < N and not check[nrow][ncol] and ices[nrow][ncol] > 0:
-                    queue.append((nrow, ncol))
-                    check[nrow][ncol] = 1
-                    cnt += 1
-        return cnt
+    def mx_cluster():
+        check = [[0] * S for _ in range(S)]
+        mx = 0
+        for r in range(S):
+            for c in range(S):
+                if board[r][c] and not check[r][c]:
+                    queue = deque([(r, c)])
+                    tmp = check[r][c] = 1
+                    while queue:
+                        row, col = queue.popleft()
+                        for d in range(4):
+                            nrow, ncol = row + drow[d], col + dcol[d]
+                            if not inside(nrow, ncol):
+                                continue
+                            if board[nrow][ncol] and not check[nrow][ncol]:
+                                queue.append((nrow, ncol))
+                                check[nrow][ncol] = 1
+                                tmp += 1
+                    mx = max(mx, tmp)
+        return mx
 
-    def decrease_ice():
-        to_decrease = []
-        for row in range(N):
-            for col in range(N):
-                if ices[row][col] == 0:
+    def decrease():
+        lst = []
+        for row in range(S):
+            for col in range(S):
+                if not board[row][col]:
                     continue
-                count = 0
+                cnt = 0
                 for d in range(4):
-                    nr, nc = row + drow[d], col + dcol[d]
-                    if 0 <= nr < N and 0 <= nc < N and ices[nr][nc] > 0:
-                        count += 1
-                if count < 3:
-                    to_decrease.append((row, col))
-        for row, col in to_decrease:
-            ices[row][col] -= 1
+                    nrow, ncol = row + drow[d], col + dcol[d]
+                    if inside(nrow, ncol) and board[nrow][ncol]:
+                        cnt += 1
+                if cnt < 3:
+                    lst.append([row, col])
+        for row, col in lst:
+            board[row][col] -= 1
 
-    def rotate(size):
-        
-        def rotate_grid(grid, size):
-            rotated = [[0] * size for _ in range(size)]
-            for r in range(size):
-                for c in range(size):
-                    rotated[c][size - 1 - r] = grid[r][c]
-            return rotated
+    def rotate(l):
+        nboard = [[0] * S for _ in range(S)]
+        size = 2 ** l
+        for off_row in range(0, S, size):
+            for off_col in range(0, S, size):
+                for r in range(size):
+                    for c in range(size):
+                        nboard[off_row + c][off_col + size - 1 - r] = board[off_row + r][off_col + c]
 
-        step = size
-        for r in range(0, N, step):
-            for c in range(0, N, step):
-                block = [ices[x][c:c + step] for x in range(r, r + step)]
-                rotated = rotate_grid(block, step)
-                for x in range(step):
-                    for y in range(step):
-                        ices[r + x][c + y] = rotated[x][y]
+        return nboard
 
-    for oper in opers:
-        size = 2 ** oper
-        rotate(size)
-        decrease_ice()
+    for l in oper:
+        board = rotate(l)
+        decrease()
 
-    total = sum(sum(row) for row in ices)
-    check = [[0] * N for _ in range(N)]
-    mx_cnt = 0
-    for r in range(N):
-        for c in range(N):
-            if not check[r][c] and ices[r][c] > 0:
-                mx_cnt = max(mx_cnt, bfs(r, c))
+    sm = sum(sum(line) for line in board)
+    mx = mx_cluster()
 
-    print(total)
-    print(mx_cnt)
+    print(sm, mx, sep = '\n')
 
 N, Q = map(int, input().split())
-ices = [list(map(int, input().split())) for _ in range(2 ** N)]
-opers = list(map(int, input().split()))
-solution(N, Q, ices, opers)
+board = [list(map(int, input().split())) for _ in range(2 ** N)]
+oper = list(map(int, input().split()))
+solution(N, Q, board, oper)
