@@ -1,3 +1,8 @@
+"""
+1. 지수 법칙
+2. 분배 법칙
+3. 분할 정복
+"""
 def solution(A, B, C):
     if B == 1:
         return A % C
