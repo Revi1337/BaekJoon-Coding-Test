@@ -1,47 +1,41 @@
+import sys
 from collections import deque
 
-def solution(vertext_cnt, edges):
-    graph = [[] for _ in range(vertext_cnt + 1)]
-    for v, nv, nc in edges:
-        graph[v].append([nv, nc])
-        graph[nv].append([v, nc])
+sys.setrecursionlimit(10 ** 5)
 
-    distance = [-1] * (vertext_cnt + 1)
-    def dfs(vertext):
-        for next_vertext, next_cost in graph[vertext]:
-            if distance[next_vertext] == -1:
-                distance[next_vertext] = distance[vertext] + next_cost
-                dfs(next_vertext)
+def solution(V, arr):
+    graph = [[] for _ in range(V + 1)]
+    for line in arr:
+        for idx in range(1, len(line) - 1, 2):
+            graph[line[0]].append([line[idx], line[idx + 1]])
 
-    def bfs(vertext):
-        distance = [-1] * (vertext_cnt + 1)
-        distance[vertext] = 0
-        queue = deque([vertext])
+    def dfs(n):
+        for nn, cost in graph[n]:
+            if dist[nn] == -1:
+                dist[nn] = dist[n] + cost
+                dfs(nn)
+
+    def bfs(n):
+        check = [-1] * (V + 1)
+        check[n] = mx = 0
+        queue = deque([n])
+
         while queue:
-            curr_vertext = queue.popleft()
-            for next_vertext, next_cost in graph[curr_vertext]:
-                if distance[next_vertext] == -1:
-                    distance[next_vertext] = distance[curr_vertext] + next_cost
-                    queue.append(next_vertext)
-        return max(distance)
+            node = queue.popleft()
+            mx = max(mx, check[node])
+            for nn, cost in graph[node]:
+                if check[nn] == -1:
+                    check[nn] = check[node] + cost
+                    queue.append(nn)
+        return mx
 
-    distance[1] = 0
+    dist = [-1] * (V + 1)
+    dist[1] = 0
     dfs(1)
-    far_vertext = distance.index(max(distance))
+    st = dist.index(max(dist))
 
-    answer = bfs(far_vertext)
+    return bfs(st)
 
-    return answer
-
-v = int(input())
-edges = []
-for _ in range(v):
-    datas = list(map(int, input().split()))
-    vertext, metadatas = datas[0], datas[1:-1]
-    for idx in range(0, len(metadatas), 2):
-        next_vertext, next_cost = metadatas[idx], metadatas[idx + 1]
-        edges.append([vertext, next_vertext, next_cost])
-
-print(solution(v, edges))
-
-
+V = int(input())
+arr = [list(map(int, input().split())) for _ in range(V)]
+print(solution(V, arr))
