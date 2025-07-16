@@ -21,7 +21,7 @@ def solution(U, F, US, FI, Q, QU):
         if user == ow and up & per == per:
             print(1)
             continue
-        if (user == gr and gp & per == per) or (user in groups[gr] and gp & per == per):
+        if user in groups[gr] and gp & per == per:
             print(1)
             continue
         if op & per == per:
