@@ -10,20 +10,19 @@ def solution(M, N, grows):
             gg.extend([g] * v)
         G.append(gg)
 
-    B = [[[1, 1] for _ in range(M)] for _ in range(M)]
+    B = [[1] * M for _ in range(M)]
     for gg in G:
         for idx in range(len(gg)):
             val = gg[idx]
             ridx, cidx = I[idx] // M, I[idx] % M
-            B[ridx][cidx][0], B[ridx][cidx][1] = B[ridx][cidx][1], B[ridx][cidx][1] + val
+            B[ridx][cidx] += val
 
-        for row in range(1, M):
-            for col in range(1, M):
-                mx = max(B[row + drow[d]][col + dcol[d]][1] - B[row + drow[d]][col + dcol[d]][0] for d in range(3))
-                B[row][col][0], B[row][col][1] = B[row][col][1], B[row][col][1] + mx
+    for row in range(1, M):
+        for col in range(1, M):
+            B[row][col] += max(B[row + drow[d]][col + dcol[d]] - 1 for d in range(3))
 
     for line in B:
-        print(*[entry[1] for entry in line], sep = ' ')
+        print(*line, sep = ' ')
 
 
 M, N = map(int, input().split())
