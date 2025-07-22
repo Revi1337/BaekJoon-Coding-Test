@@ -8,13 +8,16 @@ def solution(N, M, W, T):
         insert(trie[word[0]], word[1:])
 
     def starts_with(trie, prefix):
-        if not prefix:
+        idx = 0
+        while idx < len(prefix):
+            if prefix[idx] in trie:
+                trie = trie[prefix[idx]]
+            else:
+                return
+            idx += 1
+        else:
             nonlocal answer
             answer += 1
-            return
-        if prefix[0] not in trie:
-            return
-        starts_with(trie[prefix[0]], prefix[1:])
 
     trie = {}
     for word in W:
