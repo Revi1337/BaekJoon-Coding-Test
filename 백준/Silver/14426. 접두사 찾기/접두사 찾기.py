@@ -1,32 +1,21 @@
 def solution(N, M, W, T):
-
-    def insert(trie, word):
-        for char in word:
-            if char not in trie:
-                trie[char] = {}
-            trie = trie[char]
-
-    def starts_with(trie, prefix):
-        idx = 0
-        while idx < len(prefix):
-            if prefix[idx] in trie:
-                trie = trie[prefix[idx]]
-            else:
-                return
-            idx += 1
-        else:
-            nonlocal answer
-            answer += 1
-
-    trie = {}
-    for word in W:
-        insert(trie, word)
-
-    answer = 0
+    W.sort()
+    cnt = 0
     for prefix in T:
-        starts_with(trie, prefix)
-
-    return answer
+        left, right = 0, N - 1
+        found = False
+        while left <= right:
+            mid = (left + right) // 2
+            if W[mid].startswith(prefix):
+                found = True
+                break
+            elif W[mid] < prefix:
+                left = mid + 1
+            else:
+                right = mid - 1
+        if found:
+            cnt += 1
+    return cnt
 
 
 N, M = map(int, input().split())
