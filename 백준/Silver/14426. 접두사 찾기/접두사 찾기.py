@@ -1,11 +1,10 @@
 def solution(N, M, W, T):
 
     def insert(trie, word):
-        if not len(word):
-            return
-        if word[0] not in trie:
-            trie[word[0]] = {}
-        insert(trie[word[0]], word[1:])
+        for char in word:
+            if char not in trie:
+                trie[char] = {}
+            trie = trie[char]
 
     def starts_with(trie, prefix):
         idx = 0
