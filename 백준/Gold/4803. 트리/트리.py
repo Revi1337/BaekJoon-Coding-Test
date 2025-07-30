@@ -27,9 +27,7 @@ def solution(N, M, E):
         else:
             C.add(n1); C.add(n2)
 
-    for n in range(1, N + 1):
-        find(n)
-
+    P = [find(n) for n in range(N + 1)]
     G = {P[cn] for cn in C}
     rlen = len({P[n] for n in range(1, N + 1) if P[n] not in G})
     if not rlen:
