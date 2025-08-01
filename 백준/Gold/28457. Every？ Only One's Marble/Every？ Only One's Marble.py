@@ -2,83 +2,58 @@ import sys
 
 input = sys.stdin.readline
 
-def solution(N, S, W, G, K, A, I, D):
-    ST, MU, GI, TR = 0, N - 1, 2 * N - 2, 3 * N - 3
-    gmon, kidx, kset = 0, 0, set()
-    cmon, curr, purchase = S, 0, set()
-    island, lim = False, 0
-    jumped = False
-    invoked_by_golden_key = False
-    D = D[::-1]
-
-    arr = [-1] * ((4 * N) - 4)
+def solution(N, S, W, G, GO, A, I, D):
+    ST, MU, GI, SP, GOLD = -1, -10, -20, -30, -40
+    arr = [0] * ((4 * N) - 4)
+    arr[0], arr[N - 1], arr[2 * N - 2], arr[3 * N - 3] = ST, MU, GI, SP
+    golds = set()
     cidx = 1
     for entry in A:
-        if cidx in {ST, MU, GI, TR}:
+        if cidx in {0, N - 1, 2 * N - 2, 3 * N - 3}:
             cidx += 1
         if entry[0] == 'L':
             arr[cidx] = int(entry[1])
         else:
-            arr[cidx] = 0
-            kset.add(cidx)
+            arr[cidx] = GOLD
+            golds.add(cidx)
         cidx += 1
 
+    D = D[::-1]
+    cmon, cidx, purchase = S, 0, set()
+    gimon = gidx = island = 0
     while D:
+        d1, d2 = D.pop()
         if island:
-            for _ in range(lim):
-                if not D or (D[-1][0] != D[-1][1]):
-                    if D:
-                        D.pop()
-                else:
-                    D.pop()
-                    island = False
-                    lim = 0
-                    break
-            else:
-                island = False
+            island -= 1
+            if d1 == d2:
+                island = 0
             continue
 
-        if jumped:
-            old_curr = curr
-            curr = ST
-            if old_curr != ST:
-                cmon += W
-            jumped = False
-            continue
+        cidx += d1 + d2
+        if cidx >= (N * 4) - 4:
+            cmon += W * (cidx // (N * 4 - 4))
+        cidx = cidx % (N * 4 - 4)
 
-        if not invoked_by_golden_key:
-            if not D:
-                break
-            move = sum(D.pop())
-            if curr + move >= (4 * N - 4):
-                cmon += W * ((curr + move) // (4 * N - 4))
-            nxt = (curr + move) % ((4 * N) - 4)
-        else:
-            nxt = curr
-            invoked_by_golden_key = False
-
-        if nxt == TR:
-            jumped = True
-            curr = nxt
+        if arr[cidx] == MU:
+            island = 3
             continue
-        if nxt == MU:
-            island = True
-            lim = 3
-            curr = nxt
+        if arr[cidx] == GI:
+            cmon += gimon
+            gimon = 0
             continue
-        if nxt == ST:
+        if arr[cidx] == SP:
+            cidx = 0
             cmon += W
-            curr = nxt
             continue
-        if nxt == GI:
-            cmon += gmon
-            gmon = 0
-            curr = nxt
+        if arr[cidx] > 0:
+            if cmon >= arr[cidx] and cidx not in purchase:
+                purchase.add(cidx)
+                cmon -= arr[cidx]
             continue
 
-        if nxt in kset:
-            oper, x = K[kidx]
-            kidx = (kidx + 1) % len(K)
+        if arr[cidx] == GOLD:
+            oper, x = GO[gidx]
+            gidx = (gidx + 1) % len(GO)
             if oper == 1:
                 cmon += x
             elif oper == 2:
@@ -89,27 +64,31 @@ def solution(N, S, W, G, K, A, I, D):
                 if cmon < x:
                     return 'LOSE'
                 cmon -= x
-                gmon += x
+                gimon += x
             else:
-                old_nxt = nxt
-                nxt = (nxt + x) % ((4 * N) - 4)
-                if old_nxt + x >= (4 * N - 4):
-                    cmon += W
-                invoked_by_golden_key = True
-                curr = nxt
-                continue
-            curr = nxt
-        else:
-            if 0 < arr[nxt] <= cmon and nxt not in purchase:
-                purchase.add(nxt)
-                cmon -= arr[nxt]
-            curr = nxt
+                cidx += x
+                if cidx >= (N * 4) - 4:
+                    cmon += W * (cidx // (N * 4 - 4))
+                cidx = cidx % (N * 4 - 4)
 
-    return 'WIN' if len(purchase) == len(arr) - len(kset) - 4 else 'LOSE'
+                if arr[cidx] == MU:
+                    island = 3
+                elif arr[cidx] == GI:
+                    cmon += gimon
+                    gimon = 0
+                elif arr[cidx] == SP:
+                    cidx = 0
+                    cmon += W
+                elif arr[cidx] > 0:
+                    if cmon >= arr[cidx] and cidx not in purchase:
+                        purchase.add(cidx)
+                        cmon -= arr[cidx]
+
+    return 'WIN' if len(purchase) == len(arr) - len(golds) - 4 else 'LOSE'
 
 N, S, W, G = map(int, input().split())
-K = [list(map(int, input().rstrip().split())) for _ in range(G)]
+GO = [list(map(int, input().rstrip().split())) for _ in range(G)]
 A = [input().rstrip().split() for _ in range(4 * N - 8)]
 I = int(input())
 D = [list(map(int, input().rstrip().split())) for _ in range(I)]
-print(solution(N, S, W, G, K, A, I, D))
+print(solution(N, S, W, G, GO, A, I, D))
