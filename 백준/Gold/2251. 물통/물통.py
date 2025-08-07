@@ -5,7 +5,7 @@ input = sys.stdin.readline
 
 def solution(A, B, C):
     check = [[0] * 401 for _ in range(401)]
-    check[200][200 - C] = 1
+    check[0][-C] = 1
     queue = deque([[0, 0, C]])
     ans = set()
 
