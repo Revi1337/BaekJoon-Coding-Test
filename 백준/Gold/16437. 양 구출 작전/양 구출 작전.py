@@ -1,24 +1,9 @@
 import sys
 
-sys.setrecursionlimit(10 ** 7)
 input = sys.stdin.readline
 
 def solution(N, E):
-
     WOLF, SHEEP = 'W', 'S'
-
-    def dfs(n, pn):
-        sm = 0
-        for nn in tree[n]:
-            if nn != pn:
-                sm += dfs(nn, n)
-
-        if sign[n] == WOLF:
-            amount[n] = max(0, sm - amount[n])
-        else:
-            amount[n] += sm
-
-        return amount[n]
 
     tree = [[] for _ in range(N + 1)]
     sign, amount = [''] * (N + 1), [0] * (N + 1)
@@ -29,8 +14,30 @@ def solution(N, E):
         tree[n].append(p)
         tree[p].append(n)
 
-    dfs(1, -1)
+    stack, order = [[1, -1, 0]], []
+    while stack:
+        n, pn, visited = stack.pop()
+        if visited:
+            order.append((n, pn))
+        else:
+            stack.append([n, pn, 1])
+            for nn in tree[n]:
+                if nn != pn:
+                    stack.append([nn, n, 0])
+
+    for n, pn in order:
+        sm = 0
+        for nn in tree[n]:
+            if nn != pn:
+                sm += amount[nn]
+
+        if sign[n] == WOLF:
+            amount[n] = max(0, sm - amount[n])
+        else:
+            amount[n] += sm
+
     return amount[1]
+
 
 N = int(input())
 E = [input().rstrip().split() for _ in range(N - 1)]
