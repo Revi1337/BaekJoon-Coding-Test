@@ -4,30 +4,32 @@ input = sys.stdin.readline
 
 def solution(N, arr):
 
-    def backtrack(n, left, right):
+    def backtrack(n, left, right, lsm, rsm):
+        nonlocal ans
+        if ans == 0:
+            return
         if n == N:
-            if left and right:
-                lsm = rsm = 0
-                for idx in range(len(left)):
-                    for jdx in range(idx + 1, len(left)):
-                        lsm += arr[left[idx]][left[jdx]] + arr[left[jdx]][left[idx]]
-                for idx in range(len(right)):
-                    for jdx in range(idx + 1, len(right)):
-                        rsm += arr[right[idx]][right[jdx]] + arr[right[jdx]][right[idx]]
-                nonlocal ans
-                ans = min(ans, abs(lsm - rsm))
+            if right:
+                diff = abs(lsm - rsm)
+                if diff < ans:
+                    ans = diff
             return
 
         left.append(n)
-        backtrack(n + 1, left, right)
+        backtrack(n + 1, left, right, lsm + sum(cache[n][m] for m in left), rsm)
         left.pop()
 
         right.append(n)
-        backtrack(n + 1, left, right)
+        backtrack(n + 1, left, right, lsm, rsm + sum(cache[n][m] for m in right))
         right.pop()
 
+    cache = [[0] * N for _ in range(N)]
+    for idx in range(N):
+        for jdx in range(N):
+            cache[idx][jdx] = arr[idx][jdx] + arr[jdx][idx]
+
     ans = 100 * (N ** 2)
-    backtrack(0, [], [])
+    backtrack(1, [0], [], 0, 0)
 
     return ans
 
