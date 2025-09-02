@@ -1,5 +1,8 @@
+# 2025-09-01
+# https://www.acmicpc.net/problem/16930
+
 import sys
-from collections import deque
+import heapq
 
 input = sys.stdin.readline
 
@@ -8,28 +11,30 @@ dcol = [0, 1, 0, -1]
 
 def solution(N, M, K, arr, srow, scol, erow, ecol):
 
-    EMPTY, WALL = '.', '#'
+    EMPTY, WALL, INF = '.', '#', float('inf')
     inside = lambda row, col : 0 <= row < N and 0 <= col < M
 
     srow, scol, erow, ecol = srow - 1, scol - 1, erow - 1, ecol - 1
-    check = [[-1] * M for _ in range(N)]
+    check = [[INF] * M for _ in range(N)]
     check[srow][scol] = 0
-    queue = deque([[srow, scol]])
+    pq = [(0, srow, scol)]
 
-    while queue:
-        row, col = queue.popleft()
+    while pq:
+        time, row, col = heapq.heappop(pq)
         if row == erow and col == ecol:
-            return check[row][col]
+            return time
+        if check[row][col] < time:
+            continue
         for d in range(4):
             for off in range(1, K + 1):
                 nrow, ncol = row + drow[d] * off, col + dcol[d] * off
                 if not inside(nrow, ncol) or arr[nrow][ncol] == WALL:
                     break
-                if check[nrow][ncol] != -1 and check[nrow][ncol] <= check[row][col]:
+                if check[nrow][ncol] <= time:
                     break
-                if check[nrow][ncol] == -1:
-                    check[nrow][ncol] = check[row][col] + 1
-                    queue.append([nrow, ncol])
+                if check[nrow][ncol] == INF:
+                    check[nrow][ncol] = time + 1
+                    heapq.heappush(pq, (time + 1, nrow, ncol))
     return -1
 
 N, M, K = map(int, input().split())
