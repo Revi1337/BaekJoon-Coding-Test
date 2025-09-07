@@ -5,19 +5,20 @@ input = sys.stdin.readline
 
 def solution(N, W, L, T):
     T.reverse()
-    ans = 0
     bridge = deque([0] * W)
+    ans = sm = 0
     while bridge:
         ans += 1
-        bridge.popleft()
+        sm -= bridge.popleft()
         if T:
-            if sum(bridge) + T[-1] <= L:
-                bridge.append(T.pop())
+            if sm + T[-1] <= L:
+                poped = T.pop()
+                bridge.append(poped)
+                sm += poped
             else:
                 bridge.append(0)
 
     return ans
-
 
 N, W, L = map(int, input().split())
 T = list(map(int, input().split()))
