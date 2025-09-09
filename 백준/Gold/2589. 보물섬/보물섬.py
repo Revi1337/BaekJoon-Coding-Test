@@ -1,61 +1,60 @@
+import sys
 from collections import deque
+
+input = sys.stdin.readline
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(N, M, board):
+def solution(L, W, arr):
 
-    inside = lambda row, col : 0 <= row < N and 0 <= col < M
+    LAND, SEA = 'L', 'W'
+    inside = lambda row, col : 0 <= row < L and 0 <= col < W
 
-    def get_trace(srow, scol):
+    def find_cluster(srow, scol):
+        queue = deque([[srow, scol]])
         check[srow][scol] = 1
-        queue.append((srow, scol))
-        trace = []
-
+        cluster = []
         while queue:
             row, col = queue.popleft()
-            trace.append((row, col))
+            cluster.append([row, col])
             for d in range(4):
                 nrow, ncol = row + drow[d], col + dcol[d]
-                if inside(nrow, ncol) and board[nrow][ncol] == 'L' and not check[nrow][ncol]:
-                    check[nrow][ncol] = 1
-                    queue.append((nrow, ncol))
+                if not inside(nrow, ncol) or check[nrow][ncol] or arr[nrow][ncol] == SEA:
+                    continue
+                check[nrow][ncol] = 1
+                queue.append([nrow, ncol])
+        return cluster
 
-        return trace
-
-    def find_max_distance(srow, scol):
-        mx = 0
-        check = [[0] * M for _ in range(N)]
-        check[srow][scol] = 1
-        queue.append((srow, scol, 0))
-
+    def find_dist(srow, scol):
+        check = [[0] * W for _ in range(L)]
+        mx = check[srow][scol] = 1
+        queue = deque([[srow, scol]])
         while queue:
-            row, col, distance = queue.popleft()
-            mx = max(mx, distance)
+            row, col = queue.popleft()
+            mx = max(mx, check[row][col])
             for d in range(4):
                 nrow, ncol = row + drow[d], col + dcol[d]
-                if inside(nrow, ncol) and board[nrow][ncol] == 'L' and not check[nrow][ncol]:
-                    check[nrow][ncol] = 1
-                    queue.append((nrow, ncol, distance + 1))
+                if not inside(nrow, ncol) or check[nrow][ncol] or arr[nrow][ncol] == SEA:
+                    continue
+                check[nrow][ncol] = check[row][col] + 1
+                queue.append([nrow, ncol])
+        return mx - 1
 
-        return mx
+    check = [[0] * W for _ in range(L)]
+    clusters = []
+    for row in range(L):
+        for col in range(W):
+            if arr[row][col] == LAND and not check[row][col]:
+                clusters.append(find_cluster(row, col))
 
-    queue = deque()
-    check = [[0] * M for _ in range(N)]
-    availabe = []
-    for row in range(N):
-        for col in range(M):
-            if board[row][col] == 'L' and not check[row][col]:
-                availabe.append([*get_trace(row, col)])
+    ans = 0
+    for cluster in clusters:
+        for row, col in cluster:
+            ans = max(ans, find_dist(row, col))
 
-    answer = 0
-    for trace in availabe:
-        for row, col in trace:
-            answer = max(answer, find_max_distance(row, col))
+    return ans
 
-    return answer
-
-
-N, M = map(int, input().split())
-board = [list(input().rstrip()) for _ in range(N)]
-print(solution(N, M, board))
+L, W = map(int, input().rstrip().split())
+arr = [list(input().rstrip()) for _ in range(L)]
+print(solution(L, W, arr))
