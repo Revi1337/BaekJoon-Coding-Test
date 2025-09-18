@@ -1,35 +1,40 @@
+# 2025-09-18
+# https://www.acmicpc.net/problem/1913
 
 import sys
 
 input = sys.stdin.readline
 
+# 하, 우, 상, 좌
 drow = [1, 0, -1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(N, A):
-    board = [[0] * N for _ in range(N)]
-    target, row, col = N ** 2, 0, 0
-    d = 0
+def solution(N, M):
 
-    board[row][col] = target
-    target -= 1
+    inside = lambda row, col: 0 <= row < N and 0 <= col < N
 
-    while target > 0:
-        nrow, ncol = row + drow[d], col + dcol[d]
-        if (0 <= nrow < N) and (0 <= ncol < N) and (not board[nrow][ncol]):
-            row, col = nrow, ncol
-            board[nrow][ncol] = target
-            target -= 1
-        else:
+    arr = [[0] * N for _ in range(N)]
+    srow = scol = d = 0
+    st = N ** 2
+    arr[srow][scol] = st
+    st -= 1
+
+    ans = [1, 1]
+    while st > 0:
+        nrow, ncol = srow + drow[d], scol + dcol[d]
+        if not inside(nrow, ncol) or arr[nrow][ncol]:
             d = (d + 1) % 4
-    for line in board:
+        else:
+            arr[nrow][ncol] = st
+            srow, scol = nrow, ncol
+            if st == M:
+                ans = [srow + 1, scol + 1]
+            st -= 1
+
+    for line in arr:
         print(*line)
-    for i in range(N):
-        for j in range(N):
-            if board[i][j] == A:
-                print(i + 1, j + 1)
-                break
+    print(*ans)
 
 N = int(input())
-A = int(input())
-solution(N, A)
+M = int(input())
+solution(N, M)
