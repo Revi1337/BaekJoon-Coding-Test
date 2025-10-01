@@ -3,7 +3,7 @@
 
 import sys
 
-sys.setrecursionlimit(10 ** 7)
+sys.setrecursionlimit(10 ** 6)
 input = sys.stdin.readline
 
 drow = [-1, 0, 1, 0]
