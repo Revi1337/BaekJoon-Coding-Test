@@ -1,2 +1,5 @@
 def solution(s):
-    return ' '.join(word.capitalize() for word in s.split(' '))
+    return " ".join([w.capitalize() for w in s.split(' ')])
+
+print(solution("3people unFollowed me"))
+print(solution("for the last week"))
