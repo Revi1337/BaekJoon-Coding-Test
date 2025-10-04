@@ -1,4 +1,5 @@
-def solution(A,B):
-    A.sort()
-    B.sort(reverse=True)
-    return sum(A[idx] * B[idx] for idx in range(len(A)))
+def solution(arr1, arr2):
+    arr1.sort()
+    arr2.sort(reverse=True)
+
+    return sum(arr1[idx] * arr2[idx] for idx in range(len(arr1)))
