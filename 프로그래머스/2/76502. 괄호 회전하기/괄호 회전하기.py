@@ -1,25 +1,24 @@
 from collections import deque
 
 def solution(s):
-    answer = 0
-    brakets = deque(s)
-    length = len(s)
-    for _ in range(length):
+    string = deque(list(s))
+    ans = 0
+    for _ in range(len(s)):
+        string.rotate(-1)
         stack = []
-        for braket in brakets:
-            if braket in ['(', '[', '{']:
-                stack.append(braket)
-            else:
-                if not stack:
-                    stack.append(braket)
-                    break
-                if braket == ')' and stack[-1] == '(':
-                    stack.pop()
-                elif braket == ']' and stack[-1] == '[':
-                    stack.pop()
-                elif braket == '}' and stack[-1] == '{':
-                    stack.pop()
+        for char in string:
+            if not stack or char == '[' or char == '(' or char == '{':
+                stack.append(char)
+                continue
+
+            if char == ']' and stack[-1] == '[':
+                stack.pop()
+            elif char == ')' and stack[-1] == '(':
+                stack.pop()
+            elif char == '}' and stack[-1] == '{':
+                stack.pop()
+
         if not stack:
-            answer += 1
-        brakets.rotate(-1)
-    return answer
+            ans += 1
+
+    return ans
