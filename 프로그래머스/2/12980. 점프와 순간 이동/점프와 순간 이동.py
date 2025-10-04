@@ -1,6 +1,10 @@
-def solution(n):
-    answer = 0
-    while n > 0:
-        answer += n % 2
-        n //= 2
-    return answer
+def solution(N):
+    ans = 1
+    while N != 1:
+        if N % 2:
+            ans += 1
+            N -= 1
+        else:
+            N //= 2
+
+    return ans
