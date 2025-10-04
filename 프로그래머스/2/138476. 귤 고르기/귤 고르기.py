@@ -1,20 +1,12 @@
 def solution(k, tangerine):
-    pre = {}
-    for gul in tangerine:
-        pre[gul] = pre.get(gul, 0) + 1
-    
-    table = {}
-    for gul, cnt in pre.items():
-        table[cnt] = table.get(cnt, [])
-        table[cnt].append(gul)
-        
-    answer = 0
-    counted = sorted(table, reverse=True)
-    for cnt in counted:
-        for _ in table[cnt]:
-            k -= cnt
-            answer += 1
-            if k <= 0:
-                return answer
-                
-    return answer
+    counter = {}
+    for size in tangerine:
+        counter[size] = counter.get(size, 0) + 1
+    sdict = {key: counter[key] for key in sorted(counter.keys(), key = lambda k: -counter[k])}
+
+    ans = 0
+    for key, cnt in sdict.items():
+        k -= cnt
+        ans += 1
+        if k <= 0:
+            return ans
