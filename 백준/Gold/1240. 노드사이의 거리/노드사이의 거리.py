@@ -1,12 +1,20 @@
+from collections import deque
+
+"""BFS"""
 def solution(N, M, E1, E2):
 
-    def dfs(n):
-        if n == v2:
-            return
-        for nn, nc in tree[n]:
-            if check[nn] == -1:
-                check[nn] = check[n] + nc
-                dfs(nn)
+    def bfs(n1, n2):
+        check = [-1] * (N + 1)
+        check[n1] = 0
+        queue = deque([n1])
+        while queue:
+            n = queue.popleft()
+            if n == n2:
+                return check[n2]
+            for nn, nc in tree[n]:
+                if check[nn] == -1:
+                    check[nn] = check[n] + nc
+                    queue.append(nn)
 
     tree = [[] for _ in range(N + 1)]
     for v1, v2, c in E1:
@@ -15,10 +23,7 @@ def solution(N, M, E1, E2):
 
     ans = []
     for v1, v2 in E2:
-        check = [-1] * (N + 1)
-        check[v1] = 0
-        dfs(v1)
-        ans.append(check[v2])
+        ans.append(bfs(v1, v2))
 
     print(*ans, sep = '\n')
 
