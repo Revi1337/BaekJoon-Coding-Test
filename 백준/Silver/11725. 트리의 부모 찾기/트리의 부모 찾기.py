@@ -1,29 +1,26 @@
 import sys
 
-sys.setrecursionlimit(10 ** 5)
+sys.setrecursionlimit(10 ** 5 + 30)
 
-def solution(n, edges):
-    vertext_cnt = n
-    graph = [[] for _ in range(vertext_cnt + 1)]
-    check = [0] * (vertext_cnt + 1)
+def solution(N, E):
 
-    for vertext1, vertext2 in edges:
-        graph[vertext1].append(vertext2)
-        graph[vertext2].append(vertext1)
+    def make_tree(n, p):
+        parents[n] = p
+        for nn in tree[n]:
+            if nn != p:
+                make_tree(nn, n)
 
-    def dfs(vertext):
-        check[vertext] = 1
-        for next_vertext in graph[vertext]:
-            if not check[next_vertext]:
-                tracking[next_vertext] = vertext
-                dfs(next_vertext)
+    tree = [[] for _ in range(N + 1)]
+    for v1, v2 in E:
+        tree[v1].append(v2)
+        tree[v2].append(v1)
 
-    tracking = [0] * (vertext_cnt + 1)
-    tracking[1] = 1
-    dfs(1)
-    for vertext in range(2, vertext_cnt + 1):
-        print(tracking[vertext])
+    parents = [0] * (N + 1)
+    parents[1] = -1
+    make_tree(1, -1)
 
-n = int(input())
-edges = [list(map(int, input().split())) for _ in range(n - 1)]
-solution(n, edges)
+    print(*parents[2:], end = '\n')
+
+N = int(input())
+E = [list(map(int, input().split())) for _ in range(N - 1)]
+solution(N, E)
