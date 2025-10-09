@@ -1,15 +1,13 @@
 from collections import deque
 
 def solution(N, E):
-    if N == 1: return 0
-
     tree = [[] for _ in range(N + 1)]
     for v1, v2, c in E:
         tree[v1].append([v2, c])
         tree[v2].append([v1, c])
 
     mx, mxn = -1e9, None
-    queue = deque([[E[0][0], -1, 0]])
+    queue = deque([[1, -1, 0]])
     while queue:
         n, pn, c = queue.popleft()
         if c > mx:
