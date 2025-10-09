@@ -1,28 +1,24 @@
-import sys
+def solution(N, P, R):
 
-input = sys.stdin.readline
+    def delete(n):
+        P[n] = -100
+        for nn in tree[n]:
+            delete(nn)
 
-def solution(n, tree, delete):
+    root, tree = None, [[] for _ in range(N)]
+    for ch, p in enumerate(P):
+        if p != -1:
+            tree[p].append(ch)
 
-    DELETED = -100
+    delete(R)
+    ans = 0
+    for n in range(N):
+        if P[n] != -100 and n not in P:
+            ans += 1
 
-    def delete_children(delete_node_idx):
-        tree[delete_node_idx] = DELETED
-        for child_node_idx in range(n):
-            if delete_node_idx == tree[child_node_idx]:
-                delete_children(child_node_idx)
+    return ans
 
-    # Search And Delete Element Recursive
-    delete_children(delete)
-
-    # Count Leaf Node from Tree
-    answer = 0
-    for node_idx in range(n):
-        if tree[node_idx] != DELETED and node_idx not in tree:
-            answer += 1
-
-    return answer
-n = int(input())
-tree = list(map(int, input().split()))
-delete = int(input())
-print(solution(n, tree, delete))
+N = int(input())
+P = list(map(int, input().split()))
+R = int(input())
+print(solution(N, P, R))
