@@ -1,26 +1,29 @@
-import sys
+def solution(N, M, E1, E2):
 
-input = sys.stdin.readline
+    def dfs(n):
+        if n == v2:
+            return
+        for nn, nc in tree[n]:
+            if check[nn] == -1:
+                check[nn] = check[n] + nc
+                dfs(nn)
 
-def solution(n, edges, wish):
-    graph = [[] for _ in range(n + 1)]
-    for node1, node2, cost in edges:
-        graph[node1].append([node2, cost])
-        graph[node2].append([node1, cost])
+    tree = [[] for _ in range(N + 1)]
+    for v1, v2, c in E1:
+        tree[v1].append([v2, c])
+        tree[v2].append([v1, c])
 
-    def dfs(curr_node):
-        for next_node, cost in graph[curr_node]:
-            if check[next_node] == -1:
-                check[next_node] = check[curr_node] + cost
-                dfs(next_node)
+    ans = []
+    for v1, v2 in E2:
+        check = [-1] * (N + 1)
+        check[v1] = 0
+        dfs(v1)
+        ans.append(check[v2])
 
-    for f, t in wish:
-        check = [-1] * (n + 1)
-        check[f] = 0
-        dfs(f)
-        print(check[t])
+    print(*ans, sep = '\n')
 
-n, m = map(int, input().split())
-edges = [list(map(int, input().split())) for _ in range(n - 1)]
-wish = [list(map(int, input().split())) for _ in range(m)]
-solution(n, edges, wish)
+
+N, M = map(int, input().split())
+E1 = [list(map(int, input().split())) for _ in range(N - 1)]
+E2 = [list(map(int, input().split())) for _ in range(M)]
+solution(N, M, E1, E2)
