@@ -1,15 +1,9 @@
-import sys
+from collections import deque
 
-sys.setrecursionlimit(10 ** 5 + 30)
-
+"""
+With BFS
+"""
 def solution(N, E):
-
-    def make_tree(n, p):
-        parents[n] = p
-        for nn in tree[n]:
-            if nn != p:
-                make_tree(nn, n)
-
     tree = [[] for _ in range(N + 1)]
     for v1, v2 in E:
         tree[v1].append(v2)
@@ -17,7 +11,13 @@ def solution(N, E):
 
     parents = [0] * (N + 1)
     parents[1] = -1
-    make_tree(1, -1)
+    queue = deque([1])
+    while queue:
+        n = queue.popleft()
+        for nn in tree[n]:
+            if not parents[nn]:
+                parents[nn] = n
+                queue.append(nn)
 
     print(*parents[2:], end = '\n')
 
