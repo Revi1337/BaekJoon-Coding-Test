@@ -1,28 +1,24 @@
-import sys
+def solution(K, B):
 
-input = sys.stdin.readline
+    def recursive(lst, lv):
+        half = len(lst) // 2
+        left, right = lst[:half], lst[half + 1:]
+        lvs[lv].append(lst[half])
+        if left:
+            recursive(left, lv + 1)
+        if right:
+            recursive(right, lv + 1)
 
-def solution(K, arr):
+    lv = cnt = 0
+    while cnt < len(B):
+        lv += 1
+        cnt += 2 ** (lv - 1)
+    lvs = [[] for _ in range(lv)]
+    recursive(B, 0)
 
-    def recursive(d, arr):
-        if not len(arr):
-            return
-
-        mid = len(arr) // 2
-        ans[d].append(arr[mid])
-
-        left, right = arr[:mid], arr[mid + 1:]
-        recursive(d + 1, left)
-        recursive(d + 1, right)
-
-    ans = [[] for _ in range(K)]
-    recursive(0, arr)
-
-    for lst in ans:
-        print(*lst, sep = ' ')
+    for lv in lvs:
+        print(*lv)
 
 K = int(input())
-arr = list(map(int, input().split()))
-solution(K, arr)
-
-
+B = list(map(int, input().split()))
+solution(K, B)
