@@ -1,41 +1,34 @@
 from collections import deque
-import sys
 
-sys.setrecursionlimit(10 ** 5)
+def solution(N, E):
+    if N == 1: return 0
 
-def solution(vertext_cnt, edges):
-    graph = [[] for _ in range(vertext_cnt + 1)]
-    for vertext1, vertext2, cost in edges:
-        graph[vertext1].append([vertext2, cost])
-        graph[vertext2].append([vertext1, cost])
+    tree = [[] for _ in range(N + 1)]
+    for v1, v2, c in E:
+        tree[v1].append([v2, c])
+        tree[v2].append([v1, c])
 
-    distance = [-1] * (vertext_cnt + 1)
-    def dfs(vertext):
-        for next_vertext, next_cost in graph[vertext]:
-            if distance[next_vertext] == -1:
-                distance[next_vertext] = distance[vertext] + next_cost
-                dfs(next_vertext)
+    mx, mxn = -1e9, None
+    queue = deque([[E[0][0], -1, 0]])
+    while queue:
+        n, pn, c = queue.popleft()
+        if c > mx:
+            mx, mxn = c, n
+        for nn, nc in tree[n]:
+            if nn != pn:
+                queue.append([nn, n, c + nc])
 
-    def bfs(vertext):
-        distance = [-1] * (vertext_cnt + 1)
-        queue = deque([vertext])
-        distance[vertext] = 0
-        while queue:
-            vertext = queue.popleft()
-            for next_vertext, next_cost in graph[vertext]:
-                if distance[next_vertext] == -1:
-                    distance[next_vertext] = distance[vertext] + next_cost
-                    queue.append(next_vertext)
-        return distance
+    ans = 0
+    queue = deque([[mxn, -1, 0]])
+    while queue:
+        n, pn, c = queue.popleft()
+        ans = max(c, ans)
+        for nn, nc in tree[n]:
+            if nn != pn:
+                queue.append([nn, n, c + nc])
 
-    distance[1] = 0
-    dfs(1)
+    return ans
 
-    far_vertext = distance.index(max(distance))
-    distance = bfs(far_vertext)
-
-    return max(distance)
-
-n = int(input())
-edges = [list(map(int, input().split())) for _ in range(n - 1)]
-print(solution(n, edges))
+N = int(input())
+E = [list(map(int, input().split())) for _ in range(N - 1)]
+print(solution(N, E))
