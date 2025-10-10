@@ -1,33 +1,30 @@
-def solution(N, numbers):
+def solution(N, W):
 
-    def insert(dic, number):
-        if not len(number):
-            return
+    def can_insert(word, trie):
+        for char in word:
+            if char not in trie:
+                return True
+            if not trie[char]:
+                return False
+            trie = trie[char]
+        return True
 
-        if number[0] not in dic:
-            dic[number[0]] = {}
-        insert(dic[number[0]], number[1:])
+    def insert(word, trie):
+        for char in word:
+            if char not in trie:
+                trie[char] = {}
+            trie = trie[char]
 
-    def search(dic, number):
-        if not number:
-            return True
-        if number[0] not in dic:
-            return True
-        if not dic[number[0]]:
-            return False
-        return search(dic[number[0]], number[1:])
-
+    W.sort(key=lambda x: len(x))
     trie = {}
-    numbers.sort(key = lambda x: len(x))
-    for number in numbers:
-        number = str(number)
-        if not search(trie, number):
+    for word in W:
+        if not can_insert(word, trie):
             return 'NO'
-        insert(trie, number)
+        insert(word, trie)
     return 'YES'
 
-t = int(input())
-for _ in range(t):
-    n = int(input())
-    numbers = [input().rstrip() for _ in range(n)]
-    print(solution(n, numbers))
+T = int(input())
+for _ in range(T):
+    N = int(input())
+    W = [input().rstrip() for _ in range(N)]
+    print(solution(N, W))
