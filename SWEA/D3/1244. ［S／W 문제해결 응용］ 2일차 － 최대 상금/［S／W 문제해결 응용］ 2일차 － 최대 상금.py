@@ -1,30 +1,30 @@
-def solution(N, M):
+def solution(index, num, cnt):
 
-    N = list(str(N))
-    length = len(N)
-
-    def backtracking(n):
-        if n == M:
-            nonlocal answer
-            answer = max(answer, int("".join(N)))
-            return
-        for i in range(length - 1):
-            for j in range(i + 1, length):
-                N[i], N[j] = N[j], N[i]
-                chk = int("".join(N))
-                if (n, chk) not in check:
-                    backtracking(n + 1)
-                    check.add((n, chk))
-                N[i], N[j] = N[j], N[i]
-
+    num_len = len(str(num))
+    numbers = list(str(num))
+    answer = 0
     check = set()
-    answer = -1e9
-    backtracking(0)
 
-    return answer
+    def backtracking(change_cnt):
+        if change_cnt == cnt:
+            nonlocal answer
+            answer = max(answer, int("".join(map(str, numbers))))
+            return
+        for i in range(num_len - 1):
+            for j in range(i + 1, num_len):
+                numbers[i], numbers[j] = numbers[j], numbers[i]
+
+                chk = int("".join(map(str, numbers)))
+                if (change_cnt, chk) not in check:
+                    backtracking(change_cnt + 1)
+                    check.add((change_cnt, chk))
+
+                numbers[i], numbers[j] = numbers[j], numbers[i]
+
+    backtracking(0)
+    return f'#{index} {answer}'
 
 T = int(input())
-for seq in range(T):
-    N, M = map(int, input().split())
-    print(f'#{seq + 1} {solution(N, M)}')
-
+for index in range(T):
+    numbers, cnt = map(int, input().split())
+    print(solution(index + 1, numbers, cnt))
