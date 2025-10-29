@@ -1,4 +1,7 @@
 from collections import deque
+import sys
+
+input = sys.stdin.readline
 
 def solution(n, k):
     time = [-1] * 100_001
@@ -7,16 +10,17 @@ def solution(n, k):
     if n == k:
         return 0
     while queue:
-        curr_distance = queue.popleft()
-        if curr_distance == k:
+        curr = queue.popleft()
+        if curr == k:
             return time[k]
-        for next_distance in [curr_distance * 2, curr_distance - 1, curr_distance + 1]:
-            if (0 <= next_distance <= 100_000) and (time[next_distance] == -1):
-                if curr_distance * 2 == next_distance:
-                    time[next_distance] = time[curr_distance] + 0
+        # for next in [curr - 1, curr + 1, curr * 2]:
+        for next in [curr * 2, curr - 1, curr + 1]:
+            if (0 <= next <= 100_000) and (time[next] == -1):
+                if curr * 2 == next:
+                    time[next] = time[curr]
                 else:
-                    time[next_distance] = time[curr_distance] + 1
-                queue.append(next_distance)
+                    time[next] = time[curr] + 1
+                queue.append(next)
 
 n, k = map(int, input().split())
 print(solution(n, k))
