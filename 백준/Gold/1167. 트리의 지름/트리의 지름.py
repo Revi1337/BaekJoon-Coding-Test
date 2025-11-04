@@ -1,41 +1,40 @@
 import sys
 from collections import deque
 
-sys.setrecursionlimit(10 ** 5)
+input = sys.stdin.readline
 
-def solution(V, arr):
+def solution(V, E):
     graph = [[] for _ in range(V + 1)]
-    for line in arr:
-        for idx in range(1, len(line) - 1, 2):
-            graph[line[0]].append([line[idx], line[idx + 1]])
+    for lst in E:
+        for idx in range(1, len(lst) - 1, 2):
+            graph[lst[0]].append([lst[idx], lst[idx + 1]])
 
-    def dfs(n):
-        for nn, cost in graph[n]:
-            if dist[nn] == -1:
-                dist[nn] = dist[n] + cost
-                dfs(nn)
+    queue = deque([1])
+    check = [-1] * (V + 1)
+    far = check[1] = 1
+    while queue:
+        n = queue.popleft()
+        if check[n] > check[far]:
+            far = n
+        for nn, nc in graph[n]:
+            if check[nn] == -1:
+                check[nn] = check[n] + nc
+                queue.append(nn)
 
-    def bfs(n):
-        check = [-1] * (V + 1)
-        check[n] = mx = 0
-        queue = deque([n])
+    ans = 0
+    queue = deque([far])
+    check = [-1] * (V + 1)
+    check[far] = 0
+    while queue:
+        n = queue.popleft()
+        ans = max(ans, check[n])
+        for nn, nc in graph[n]:
+            if check[nn] == -1:
+                check[nn] = check[n] + nc
+                queue.append(nn)
 
-        while queue:
-            node = queue.popleft()
-            mx = max(mx, check[node])
-            for nn, cost in graph[node]:
-                if check[nn] == -1:
-                    check[nn] = check[node] + cost
-                    queue.append(nn)
-        return mx
-
-    dist = [-1] * (V + 1)
-    dist[1] = 0
-    dfs(1)
-    st = dist.index(max(dist))
-
-    return bfs(st)
+    return ans
 
 V = int(input())
-arr = [list(map(int, input().split())) for _ in range(V)]
-print(solution(V, arr))
+E = [list(map(int, input().split())) for _ in range(V)]
+print(solution(V, E))
