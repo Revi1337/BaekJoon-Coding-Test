@@ -34,17 +34,16 @@ def solution(N, E, M, Q):
     def lca_with_dist(n1, n2):
         cn1, cn2 = n1, n2
         if depths[n1] > depths[n2]:
-            n1, n2 = n2, n1
-            cn1, cn2 = cn2, cn1
+            n1, n2, cn1, cn2 = n2, n1, n2, n1
         for k in range(LOG - 1, -1, -1):
             if depths[n2] - depths[n1] >= (1 << k):
                 n2 = parents[n2][k]
         if n1 == n2:
-            return dist[cn1] + dist[cn2] - (2 * dist[n1])
+            return dist[cn2] - dist[cn1]
         for k in range(LOG - 1, -1, -1):
             if parents[n1][k] != parents[n2][k]:
                 n1, n2 = parents[n1][k], parents[n2][k]
-        return dist[cn1] + dist[cn2] - (2 * dist[parents[n1][0]])
+        return (dist[cn1] - dist[parents[n1][0]]) + (dist[cn2] - dist[parents[n1][0]])
 
     parents = [[0] * LOG for _ in range(N + 1)]
     depths, dist = [[0] * (N + 1) for _ in range(2)]
