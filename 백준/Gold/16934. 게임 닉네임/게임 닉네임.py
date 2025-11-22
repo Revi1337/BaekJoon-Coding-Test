@@ -7,7 +7,7 @@ input = sys.stdin.readline
 
 def solution(N, S):
 
-    def insert(trie, word, cnt):
+    def insert(trie, word):
         pfx = ""
         for char in word:
             pfx += char
@@ -20,12 +20,12 @@ def solution(N, S):
                 return pfx
             trie = trie[char]
 
-        return word if cnt[word] == 1 else word + str(cnt[word])
+        return word if counter[word] == 1 else word + str(counter[word])
 
     trie, counter, ans = {}, {}, []
     for name in S:
         counter[name] = counter.get(name, 0) + 1
-        alias = insert(trie, name, counter)
+        alias = insert(trie, name)
         ans.append(alias)
 
     print(*ans, sep='\n')
