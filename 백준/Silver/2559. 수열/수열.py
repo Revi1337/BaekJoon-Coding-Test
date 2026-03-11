@@ -1,22 +1,14 @@
-import sys
+# 2026-03-11
+# https://www.acmicpc.net/problem/2559
+# psum
 
-input = sys.stdin.readline
+def solution(N, K, T):
+    psum = [0] * (N + 1)
+    for idx in range(1, N + 1):
+        psum[idx] = psum[idx - 1] + T[idx - 1]
 
-'''
-수열 (https://www.acmicpc.net/problem/2559)
-2024-08-14
-'''
-
-def solution(N, K, temps):
-    left, right = 0, K
-    temp = sum(temps[left : right])
-    answer = temp
-    while right < N:
-        temp = temp - temps[left] + temps[right]
-        answer = max(answer, temp)
-        left, right = left + 1, right + 1
-    return answer
+    return max(psum[st] - psum[st - K] for st in range(K, N + 1))
 
 N, K = map(int, input().split())
-temps = list(map(int, input().split()))
-print(solution(N, K, temps))
+T = list(map(int, input().split()))
+print(solution(N, K, T))
