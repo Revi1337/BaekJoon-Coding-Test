@@ -1,28 +1,20 @@
-import sys
+# 2026-03-11
+# https://www.acmicpc.net/problem/1654
+# binary_search
 
-input = sys.stdin.readline
-
-def solution(k, n, datas):
-    max_cable = max(datas)
-    left, right = 1, max_cable
-    answer = 0
-
-    def count(length):
-        cnt = 0
-        for x in datas:
-            cnt += (x // length)
-        return cnt
-
-    while left <= right:
+def solution(K, N, arr):
+    left, right = 1, max(arr) + 1
+    while left < right:
         mid = (left + right) // 2
-        if count(mid) >= n:
-            answer = mid
+        poss = sum(v // mid for v in arr)
+        if poss >= N:
             left = mid + 1
         else:
-            right = mid - 1
+            right = mid
 
-    return answer
+    return left - 1
 
-k, n = map(int, input().split())
-datas = [int(input().rstrip()) for _ in range(k)]
-print(solution(k, n, datas))
+K, N = map(int, input().split())
+arr = [int(input()) for _ in range(K)]
+print(solution(K, N, arr))
+
