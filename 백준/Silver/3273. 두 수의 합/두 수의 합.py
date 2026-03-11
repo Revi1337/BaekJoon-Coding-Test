@@ -1,23 +1,17 @@
-import sys
+# 2026-03-11
+# https://www.acmicpc.net/problem/3273
+def solution(N, arr, X):
+    sarr = set(arr)
+    used = set()
+    ans = 0
+    for n1 in arr:
+        n2 = X - n1
+        if n2 in sarr and n2 not in used:
+            ans += 1
 
-input = sys.stdin.readline
+    return ans // 2
 
-def solution(n, numbers, x):
-    numbers.sort()
-    answer = 0
-    left, right = 0, n - 1
-    while left < right:
-        total = numbers[left] + numbers[right]
-        if total == x:
-            answer += 1
-        if total >= x:
-            right -= 1
-        elif total <= x:
-            left += 1
-
-    return answer
-
-n = int(input().rstrip())
-numbers = list(map(int, input().split()))
-x = int(input().rstrip())
-print(solution(n, numbers, x))
+N = int(input())
+arr = list(map(int, input().split()))
+X = int(input())
+print(solution(N, arr, X))
