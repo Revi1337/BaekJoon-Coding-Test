@@ -1,38 +1,40 @@
-import sys
-from collections import deque
+# 2026-03-13
+# https://www.acmicpc.net/problem/7576
+# bfs
 
-input = sys.stdin.readline
+from collections import deque
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(M, N, box):
+def solution(M, N, arr):
+    inside = lambda row, col: 0 <= row < N and 0 <= col < M
+
     queue = deque()
-    distance = [[0] * M for _ in range(N)]
-    answer = -1e9
+    check = [[0] * M for _ in range(N)]
     for row in range(N):
         for col in range(M):
-            if box[row][col] == 1:
-                distance[row][col] = 1
-                queue.append((row, col))
+            if arr[row][col] == 1:
+                queue.append([row, col])
+                check[row][col] = 1
 
+    ans = 0
     while queue:
         row, col = queue.popleft()
+        ans = check[row][col]
         for d in range(4):
-            nrow = row + drow[d]
-            ncol = col + dcol[d]
-            if (0 <= nrow < N) and (0 <= ncol < M) and (box[nrow][ncol] == 0) and (distance[nrow][ncol] == 0):
-                distance[nrow][ncol] = distance[row][col] + 1
-                queue.append((nrow, ncol))
+            nrow, ncol = row + drow[d], col + dcol[d]
+            if inside(nrow, ncol) and not check[nrow][ncol] and not arr[nrow][ncol]:
+                check[nrow][ncol] = check[row][col] + 1
+                queue.append([nrow, ncol])
 
     for row in range(N):
         for col in range(M):
-            if distance[row][col] == 0 and box[row][col] != -1:
+            if not arr[row][col] and not check[row][col]:
                 return -1
-            answer = max(answer, distance[row][col])
 
-    return answer - 1
+    return ans - 1
 
 M, N = map(int, input().split())
-box = [list(map(int, input().split())) for _ in range(N)]
-print(solution(M, N, box))
+arr = [list(map(int, input().split())) for _ in range(N)]
+print(solution(M, N, arr))
