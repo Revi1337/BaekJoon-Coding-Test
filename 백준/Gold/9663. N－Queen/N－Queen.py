@@ -1,24 +1,27 @@
+# 2026-03-13
+# https://www.acmicpc.net/problem/9663
+# backtrack
+
 def solution(N):
 
-    def backtracking(n):
-        if n == N:
-            nonlocal answer
-            answer += 1
+    def backtrack(srow, scol):
+        if srow == N:
+            nonlocal ans
+            ans += 1
             return
-        for col in range(N):
-            if rows[col] == 0 and digon1[n + col] == 0 and digon2[n - col] == 0:
-                rows[col] = digon1[n + col] = digon2[n - col] = 1
-                backtracking(n + 1)
-                rows[col] = digon1[n + col] = digon2[n - col] = 0
 
-    rows = [0] * N
-    digon1 = [0] * (2 * N)
-    digon2 = [0] * (2 * N)
+        for ncol in range(scol, N):
+            if ch1[srow] == ch2[ncol] == ch3[srow + ncol] == ch4[srow - ncol] == 0:
+                ch1[srow] = ch2[ncol] = ch3[srow + ncol] = ch4[srow - ncol] = 1
+                backtrack(srow + 1, scol)
+                ch1[srow] = ch2[ncol] = ch3[srow + ncol] = ch4[srow - ncol] = 0
 
-    answer = 0
-    backtracking(0)
+    ch1, ch2 = [[0] * N for _ in range(2)]
+    ch3, ch4 = [[0] * (N * 2) for _ in range(2)]
+    ans = 0
+    backtrack(0, 0)
 
-    return answer
+    return ans
 
 N = int(input())
 print(solution(N))
