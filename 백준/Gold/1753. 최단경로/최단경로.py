@@ -1,34 +1,28 @@
-import sys
+# 2026-03-13
+# https://www.acmicpc.net/problem/1753
+# dijkstra
+
 import heapq
 
-input = sys.stdin.readline
-
-def solution(V, E, K, edges):
+def solution(V, E, st, EE):
+    INF = 1e9
     graph = [[] for _ in range(V + 1)]
-    for v1, v2, w in edges:
-        graph[v1].append([v2, w])
+    for u, v, w in EE:
+        graph[u].append([v, w])
 
-    costs = [float('inf')] * (V + 1)
-    costs[K] = 0
-    pq = []
-    heapq.heappush(pq, [costs[K], K])
+    costs = [INF] * (V + 1)
+    costs[st] = 0
+    pq = [[costs[st], st]]
     while pq:
-        cost, vertext = heapq.heappop(pq)
-        if costs[vertext] < cost:
-            continue
-        for next_vertext, next_cost in graph[vertext]:
-            total_cost = cost + next_cost
-            if total_cost < costs[next_vertext]:
-                costs[next_vertext] = total_cost
-                heapq.heappush(pq, [total_cost, next_vertext])
+        c, v = heapq.heappop(pq)
+        for nv, nc in graph[v]:
+            if c + nc < costs[nv]:
+                costs[nv] = c + nc
+                heapq.heappush(pq, [costs[nv], nv])
 
-    for c in costs[1:]:
-        if c == float('inf'):
-            print('INF')
-        else:
-            print(c)
+    print(*['INF' if cost == INF else cost for cost in costs[1:]], sep = '\n')
 
 V, E = map(int, input().split())
-K = int(input())
-edges = [list(map(int, input().split())) for _ in range(E)]
-solution(V, E, K, edges)
+st = int(input())
+EE = [list(map(int, input().split())) for _ in range(E)]
+solution(V, E, st, EE)
