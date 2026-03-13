@@ -1,57 +1,64 @@
-import sys
-from collections import deque
+# 2026-03-13
+# https://www.acmicpc.net/problem/14502
+# backtrack + bfs
 
-input = sys.stdin.readline
+from collections import deque
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(N, M, board):
-    virus = []
-    answer = -1e9
-    for row in range(N):
-        for col in range(M):
-            if board[row][col] == 2:
-                virus.append((row, col))
+def solution(N, M, arr):
 
-    def dfs(count):
-        if count == 3:
-            bfs()
-            return
-        for row in range(N):
-            for col in range(M):
-                if board[row][col] == 0:
-                    board[row][col] = 1
-                    dfs(count + 1)
-                    board[row][col] = 0
+    EMPTY, WALL, VIRUS = 0, 1, 2
 
-    def bfs():
+    inside = lambda row, col: 0 <= row < N and 0 <= col < M
+
+    def spread():
         queue = deque(virus)
-        check = [[0] * M for _ in range(N)]
-        for row in range(N):
-            for col in range(M):
-                check[row][col] = board[row][col]
+        carr = [[*line] for line in arr]
 
         while queue:
             row, col = queue.popleft()
             for d in range(4):
                 nrow, ncol = row + drow[d], col + dcol[d]
-                if (0 <= nrow < N) and (0 <= ncol < M) and (not check[nrow][ncol]):
-                    check[nrow][ncol] = 2
-                    queue.append((nrow, ncol))
+                if inside(nrow, ncol) and not carr[nrow][ncol]:
+                    carr[nrow][ncol] = VIRUS
+                    queue.append([nrow, ncol])
 
-        ans = 0
+        cnt = 0
         for row in range(N):
             for col in range(M):
-                if check[row][col] == 0:
-                    ans += 1
-        nonlocal answer
-        answer = max(answer, ans)
+                if carr[row][col] == 0:
+                    cnt += 1
 
-    dfs(0)
+        return cnt
 
-    return answer
+
+    def build_wall(st, cnt):
+        if cnt == 3:
+            nonlocal ans
+            cnt = spread()
+            ans = max(ans, cnt)
+            return
+
+        for nxt in range(st, len(poss)):
+            arr[poss[nxt][0]][poss[nxt][1]] = WALL
+            build_wall(nxt + 1, cnt + 1)
+            arr[poss[nxt][0]][poss[nxt][1]] = EMPTY
+
+    poss, virus = [], []
+    for row in range(N):
+        for col in range(M):
+            if arr[row][col] == EMPTY:
+                poss.append([row, col])
+            elif arr[row][col] == VIRUS:
+                virus.append([row, col])
+
+    ans = 0
+    build_wall(0, 0)
+
+    return ans
 
 N, M = map(int, input().split())
-board = [list(map(int, input().split())) for _ in range(N)]
-print(solution(N, M, board))
+arr = [list(map(int, input().split())) for _ in range(N)]
+print(solution(N, M, arr))
