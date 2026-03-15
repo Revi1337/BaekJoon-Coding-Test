@@ -1,43 +1,47 @@
-from collections import deque
-import sys
+# 2026-03-15
+# https://www.acmicpc.net/problem/7569
+# bfs
 
-input = sys.stdin.readline
+from collections import deque
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(N, L, R, board):
-    answer = 0
-    while answer <= 2000:
-        queue = deque()
-        flag = 0
+def solution(N, L, R, arr):
+
+    inside = lambda row, col: 0 <= row < N and 0 <= col < N
+
+    ans = 0
+    while True:
         check = [[0] * N for _ in range(N)]
-        for row in range(N):
-            for col in range(N):
-                if not check[row][col]:
-                    queue.append((row, col))
-                    check[row][col] = 1
-                    team = [(row, col)]
-                    total = board[row][col]
+        grps = []
+        for srow in range(N):
+            for scol in range(N):
+                if not check[srow][scol]:
+                    grp = [[srow, scol]]
+                    check[srow][scol] = 1
+                    queue = deque([[srow, scol]])
                     while queue:
-                        r, c = queue.popleft()
+                        row, col = queue.popleft()
                         for d in range(4):
-                            nr = r + drow[d]
-                            nc = c + dcol[d]
-                            if (0 <= nr < N) and (0 <= nc < N) and (not check[nr][nc]) and (L <= abs(board[r][c] - board[nr][nc]) <= R):
-                                queue.append((nr, nc))
-                                check[nr][nc] = 1
-                                team.append((nr, nc))
-                                total += board[nr][nc]
-                    if len(team) > 1:
-                        for ti, tj in team:
-                            board[ti][tj] = total // len(team)
-                        flag = 1
-        if flag == 0:
-            break
-        answer += 1
-    return answer
+                            nrow, ncol = row + drow[d], col + dcol[d]
+                            if inside(nrow, ncol) and not check[nrow][ncol] and L <= abs(arr[nrow][ncol] - arr[row][col]) <= R:
+                                grp.append([nrow, ncol])
+                                check[nrow][ncol] = 1
+                                queue.append([nrow, ncol])
+                    if len(grp) > 1:
+                        grps.append(grp)
+
+        if not grps:
+            return ans
+
+        ans += 1
+        for grp in grps:
+            cnt, sm = len(grp), sum([arr[row][col] for row, col in grp])
+            nxt = sm // cnt
+            for row, col in grp:
+                arr[row][col] = nxt
 
 N, L, R = map(int, input().split())
-board = [list(map(int, input().split())) for _ in range(N)]
-print(solution(N, L, R, board))
+arr = [list(map(int, input().split())) for _ in range(N)]
+print(solution(N, L, R, arr))
