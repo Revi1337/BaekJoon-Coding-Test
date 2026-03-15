@@ -1,37 +1,45 @@
-import sys
+# 2026-03-15
+# https://www.acmicpc.net/problem/10026
+# bfs
 
-sys.setrecursionlimit(10 ** 5)
+from collections import deque
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(n, colors):
+def solution(N, arr):
 
-    def dfs(row, col, color, dead_color):
-        check[row][col] = 1
-        for d in range(4):
-            nrow = row + drow[d]
-            ncol = col + dcol[d]
-            if (0 <= nrow < n) and (0 <= ncol < n) and (not check[nrow][ncol]):
-                if not dead_color:
-                    if colors[nrow][ncol] == color:
-                        dfs(nrow, ncol, color, dead_color)
-                else:
-                    if (color in ['R', 'G']) and (colors[nrow][ncol] in ['R', 'G']):
-                        dfs(nrow, ncol, color, dead_color)
-                    elif (color == 'B') and (colors[nrow][ncol] == color):
-                        dfs(nrow, ncol, color, dead_color)
+    inside = lambda row, col: 0 <= row < N and 0 <= col < N
 
-    answer = [0] * 2
-    for dead_color in range(2):
-        check = [[0] * n for _ in range(n)]
-        for row in range(n):
-            for col in range(n):
-                if not check[row][col]:
-                    answer[dead_color] += 1
-                    dfs(row, col, colors[row][col], dead_color)
+    def bfs(arr):
+        check = [[0] * N for _ in range(N)]
+        cnt = 0
+        for srow in range(N):
+            for scol in range(N):
+                if not check[srow][scol]:
+                    cnt += 1
+                    init = arr[srow][scol]
+                    check[srow][scol] = 1
+                    queue = deque([[srow, scol]])
+                    while queue:
+                        row, col = queue.popleft()
+                        for d in range(4):
+                            nrow, ncol = row + drow[d], col + dcol[d]
+                            if inside(nrow, ncol) and arr[nrow][ncol] == init and not check[nrow][ncol]:
+                                check[nrow][ncol] = 1
+                                queue.append([nrow, ncol])
+        return cnt
 
-    return " ".join(map(str, answer))
-n = int(input())
-colors = [list(input()) for _ in range(n)]
-print(solution(n, colors))
+    carr = [[''] * N for _ in range(N)]
+    for row in range(N):
+        for col in range(N):
+            if arr[row][col] == 'G':
+                carr[row][col] = 'R'
+            else:
+                carr[row][col] = arr[row][col]
+
+    print(*[bfs(arr), bfs(carr)])
+
+N = int(input())
+arr = [list(input().rstrip()) for _ in range(N)]
+solution(N, arr)
