@@ -1,26 +1,25 @@
+# 2026-03-17
+# https://www.acmicpc.net/problem/12851
+# bfs
+
 from collections import deque
 
 def solution(N, K):
-    MAX = 200_001
-    dist = [-1] * MAX
-    count = [0] * MAX
-
+    cnts, check = [[0] * 200_001 for _ in range(2)]
+    cnts[N] = check[N] = 1
     queue = deque([N])
-    dist[N], count[N] = 0, 1
-
     while queue:
         curr = queue.popleft()
-        for next in (curr - 1, curr + 1, curr * 2):
-            if 0 <= next < MAX:
-                if dist[next] == -1:
-                    dist[next] = dist[curr] + 1
-                    count[next] = count[curr]
-                    queue.append(next)
-                elif dist[next] == dist[curr] + 1:
-                    count[next] += count[curr]
+        for nxt in curr - 1, curr + 1, curr * 2:
+            if 0 <= nxt <= 200_000:
+                if not check[nxt]:
+                    check[nxt] = check[curr] + 1
+                    cnts[nxt] = cnts[curr]
+                    queue.append(nxt)
+                elif check[nxt] == check[curr] + 1:
+                    cnts[nxt] += cnts[curr]
 
-    print(dist[K])
-    print(count[K])
+    print(*[check[K] - 1, cnts[K]], sep = '\n')
 
 N, K = map(int, input().split())
 solution(N, K)
