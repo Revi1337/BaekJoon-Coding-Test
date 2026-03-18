@@ -1,29 +1,29 @@
+# 2026-03-18
+# https://www.acmicpc.net/problem/13913
+# bfs
+
 from collections import deque
-import sys
 
-input = sys.stdin.readline
+def solution(N, K):
+    check, trace = [[-1] * 200_001 for _ in range(2)]
+    check[N] = 0
+    queue = deque([N])
 
-def solution(n, k):
-    queue = deque()
-    queue.append(n)
-    check = [0] * 100_001
-    tracking = [0] * 100_001
     while queue:
-        distance = queue.popleft()
-        if distance == k:
-            print(check[distance])
-            data = []
-            tmp = distance
-            for _ in range(check[distance] + 1):
-                data.append(tmp)
-                tmp = tracking[tmp]
-            print(" ".join(map(str, data[::-1])))
+        curr = queue.popleft()
+        if curr == K:
+            print(check[curr])
+            foot = [K]
+            while trace[K] != -1:
+                foot.append(trace[K])
+                trace[K] = trace[trace[K]]
+            print(*foot[::-1])
             return
-        for next_distance in (distance - 1, distance + 1, distance * 2):
-            if (0 <= next_distance <= 100_000) and check[next_distance] == 0:
-                check[next_distance] = check[distance] + 1
-                queue.append(next_distance)
-                tracking[next_distance] = distance
+        for nxt in curr - 1, curr + 1, curr * 2:
+            if 0 <= nxt <= 200_000 and check[nxt] == -1:
+                check[nxt] = check[curr] + 1
+                trace[nxt] = curr
+                queue.append(nxt)
 
-n, k = map(int, input().split())
-solution(n, k)
+N, K = map(int, input().split())
+solution(N, K)
