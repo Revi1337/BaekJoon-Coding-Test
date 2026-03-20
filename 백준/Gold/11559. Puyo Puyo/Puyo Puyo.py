@@ -1,62 +1,51 @@
-from collections import deque
-
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(board):
+def solution(arr):
 
-    inside = lambda row, col : 0 <= row < 12 and 0 <= col < 6
+    inside = lambda row, col: 0 <= row < 12 and 0 <= col < 6
 
-    def breaking(srow, scol):
-        check[srow][scol] = 1
-        queue.append((srow, scol))
-        trace = []
-
-        while queue:
-            row, col = queue.popleft()
-            trace.append([row, col])
-            for d in range(4):
-                nrow, ncol = row + drow[d], col + dcol[d]
-                if inside(nrow, ncol) and board[nrow][ncol] == board[srow][scol] and not check[nrow][ncol]:
-                    check[nrow][ncol] = 1
-                    queue.append((nrow, ncol))
-
-        return trace
-
-    answer = 0
-    queue = deque()
+    ans = 0
     while True:
         check = [[0] * 6 for _ in range(12)]
-        traceable = []
+        breaked = False
         for row in range(12):
             for col in range(6):
-                if board[row][col] != '.' and not check[row][col]:
-                    trace = breaking(row, col)
-                    if len(trace) >= 4:
-                        traceable.append(trace)
+                if arr[row][col] != '.' and not check[row][col]:
+                    color = arr[row][col]
+                    queue = [(row, col)]
+                    check[row][col] = 1
+                    lst = [(row, col)]
+                    while queue:
+                        srow, scol = queue.pop()
+                        for d in range(4):
+                            nrow, ncol = srow + drow[d], scol + dcol[d]
+                            if inside(nrow, ncol) and not check[nrow][ncol] and arr[nrow][ncol] == color:
+                                check[nrow][ncol] = 1
+                                queue.append((nrow, ncol))
+                                lst.append((nrow, ncol))
 
-        if len(traceable) == 0:
-            return answer
+                    if len(lst) >= 4:
+                        breaked = True
+                        for srow, scol in lst:
+                            arr[srow][scol] = '.'
 
-        for trace in traceable:
-            for row, col in trace:
-                board[row][col] = '.'
+        if not breaked:
+            return ans
+
+        ans += 1
 
         for row in range(11, -1, -1):
             for col in range(6):
-                if board[row][col] == '.':
-                    continue
-                srow = row
-                for nrow in range(srow + 1, 12):
-                    if nrow >= 12 or board[nrow][col] != '.':
-                        break
-                    srow = nrow
-                if row != srow:
-                    board[srow][col] = board[row][col]
-                    board[row][col] = '.'
+                if arr[row][col] != '.':
+                    srow, scol = row, col
+                    while True:
+                        nrow = srow + 1
+                        if nrow >= 12 or arr[nrow][scol] != '.':
+                            break
+                        arr[nrow][scol], arr[srow][scol] = arr[srow][scol], '.'
+                        srow = nrow
 
-        answer += 1
+arr = [list(input().rstrip()) for _ in range(12)]
+print(solution(arr))
 
-
-board = [list(input().rstrip()) for _ in range(12)]
-print(solution(board))
