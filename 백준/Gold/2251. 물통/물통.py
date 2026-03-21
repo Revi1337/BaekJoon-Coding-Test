@@ -1,11 +1,12 @@
-import sys
-from collections import deque
+# 2026-03-21
+# https://www.acmicpc.net/problem/2251
+# bfs
 
-input = sys.stdin.readline
+from collections import deque
 
 def solution(A, B, C):
     check = [[0] * 401 for _ in range(401)]
-    check[0][-C] = 1
+    check[0][0] = 1
     queue = deque([[0, 0, C]])
     ans = set()
 
