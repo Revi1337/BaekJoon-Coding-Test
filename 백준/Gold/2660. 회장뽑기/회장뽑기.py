@@ -1,25 +1,27 @@
-def solution(N, edges):
+# 2026-03-22
+# https://www.acmicpc.net/problem/2660
+# floyd-warshall (bfs 로도 풀 수 있음)
+
+def solution(N, E):
     dp = [[1e9] * (N + 1) for _ in range(N + 1)]
     for mid in range(N + 1):
         dp[mid][mid] = 0
-
-    for v1, v2 in edges:
+    for v1, v2 in E:
         dp[v1][v2] = dp[v2][v1] = 1
 
-    for bridge in range(1, N + 1):
-        for v1 in range(1, N + 1):
-            for v2 in range(1, N + 1):
-                if dp[v1][bridge] + dp[bridge][v2] < dp[v1][v2]:
-                    dp[v1][v2] = dp[v1][bridge] + dp[bridge][v2]
+    for mid in range(1, N + 1):
+        for st in range(1, N + 1):
+            for end in range(1, N + 1):
+                if dp[st][mid] + dp[mid][end] < dp[st][end]:
+                    dp[st][end] = dp[st][mid] + dp[mid][end]
 
     costs = [max(line[1:]) for line in dp[1:]]
     mn = min(costs)
     mn_cnt = costs.count(mn)
-    candidates = map(lambda x: x[0], filter(lambda x: x[1] == mn, [cost for cost in enumerate(costs, start = 1)]))
+    candidates = map(lambda x: x[0], filter(lambda x: x[1] == mn, [cost for cost in enumerate(costs, start=1)]))
 
     print(mn, mn_cnt)
     print(*candidates)
-
 
 N = int(input())
 edges = []
