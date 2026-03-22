@@ -1,6 +1,6 @@
 # 2026-03-22
 # https://www.acmicpc.net/problem/18405
-# bfs
+# bfs (queue 기반 bfs 로도 풀 수 있음.)
 
 from collections import deque
 
@@ -11,23 +11,25 @@ def solution(N, K, arr, S, X, Y):
 
     inside = lambda row, col: 0 <= row < N and 0 <= col < N
 
-    lst = []
+    lst, check = [], [[-1] * N for _ in range(N)]
     for row in range(N):
         for col in range(N):
             if arr[row][col]:
-                lst.append((arr[row][col], 0, row, col))
+                check[row][col] = 0
+                lst.append((row, col))
+    lst.sort(key=lambda pos: arr[pos[0]][pos[1]])
 
-    lst.sort()
     queue = deque([*lst])
     while queue:
-        sign, time, row, col = queue.popleft()
-        if time == S:
+        row, col = queue.popleft()
+        if check[row][col] == S:
             break
         for d in range(4):
             nrow, ncol = row + drow[d], col + dcol[d]
             if inside(nrow, ncol) and not arr[nrow][ncol]:
-                arr[nrow][ncol] = sign
-                queue.append((arr[nrow][ncol], time + 1, nrow, ncol))
+                check[nrow][ncol] = check[row][col] + 1
+                arr[nrow][ncol] = arr[row][col]
+                queue.append((nrow, ncol))
 
     return arr[X - 1][Y - 1]
 
