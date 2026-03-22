@@ -1,3 +1,7 @@
+# 2026-03-22
+# https://www.acmicpc.net/problem/18405
+# bfs
+
 from collections import deque
 
 drow = [-1, 0, 1, 0]
@@ -5,24 +9,27 @@ dcol = [0, 1, 0, -1]
 
 def solution(N, K, arr, S, X, Y):
 
-    queue = deque(sorted((arr[row][col], row, col) for row in range(N) for col in range(N)))
+    inside = lambda row, col: 0 <= row < N and 0 <= col < N
 
-    while S > 0:
-        nqueue = []
-        while queue:
-            virus, row, col = queue.popleft()
-            for d in range(4):
-                nrow, ncol = row + drow[d], col + dcol[d]
-                if 0 <= nrow < N and 0 <= ncol < N:
-                    if not arr[nrow][ncol]:
-                        arr[nrow][ncol] = virus
-                        nqueue.append((virus, nrow, ncol))
+    lst = []
+    for row in range(N):
+        for col in range(N):
+            if arr[row][col]:
+                lst.append((arr[row][col], 0, row, col))
 
-        queue = deque(sorted(nqueue))
-        S -= 1
+    lst.sort()
+    queue = deque([*lst])
+    while queue:
+        sign, time, row, col = queue.popleft()
+        if time == S:
+            break
+        for d in range(4):
+            nrow, ncol = row + drow[d], col + dcol[d]
+            if inside(nrow, ncol) and not arr[nrow][ncol]:
+                arr[nrow][ncol] = sign
+                queue.append((arr[nrow][ncol], time + 1, nrow, ncol))
 
-    return arr[X - 1][Y - 1] if arr[X - 1][Y - 1] else 0
-
+    return arr[X - 1][Y - 1]
 
 N, K = map(int, input().split())
 arr = [list(map(int, input().split())) for _ in range(N)]
