@@ -1,30 +1,36 @@
 # 2026-04-16
 # https://www.acmicpc.net/problem/1987
-# 알파벳 (백트래킹 + 비트마스킹) bfs 로도 가능할듯?
+# V4. bfs + set check
+
+from collections import deque
+
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(N, M, arr):
+def solution(R, C, arr):
 
-    inside = lambda row, col: 0 <= row < N and 0 <= col < M
+    inside = lambda row, col : 0 <= row < R and 0 <= col < C
 
-    def backtrack(srow, scol, check, cnt):
-        nonlocal ans
-        ans = max(ans, cnt)
-        if ans == 26:
-            return
+    check = [[set() for _ in range(C)] for _ in range(R)]
+    check[0][0].add(arr[0][0])
+    ans, queue = 1, deque([[0, 0, arr[0][0]]])
+
+    while queue:
+        row, col, char = queue.popleft()
+        ans = max(ans, len(char))
         for d in range(4):
-            nrow, ncol = srow + drow[d], scol + dcol[d]
-            if inside(nrow, ncol):
-                bit = 1 << (ord(arr[nrow][ncol]) - 65)
-                if not (check & bit):
-                    backtrack(nrow, ncol, check | bit, cnt + 1)
+            nrow, ncol = row + drow[d], col + dcol[d]
+            if not inside(nrow, ncol):
+                continue
+            if arr[nrow][ncol] in char:
+                continue
+            if char + arr[nrow][ncol] in check[nrow][ncol]:
+                continue
+            check[nrow][ncol].add(char + arr[nrow][ncol])
+            queue.append([nrow, ncol, char + arr[nrow][ncol]])
 
-    ans = 0
-    start = 1 << (ord(arr[0][0]) - 65)
-    backtrack(0, 0, start, 1)
     return ans
 
-N, M = map(int, input().split())
-arr = [list(input().rstrip()) for _ in range(N)]
-print(solution(N, M, arr))
+R, C = map(int, input().split())
+arr = [list(input().rstrip()) for _ in range(R)]
+print(solution(R, C, arr))
