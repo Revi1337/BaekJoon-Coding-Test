@@ -1,26 +1,31 @@
-from collections import deque
+# 2026-04-16
+# https://www.acmicpc.net/problem/1987
+# 알파벳 (백트래킹) bfs 로도 가능할듯?
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(R, C, board):
-    check = [[set() for _ in range(C)] for _ in range(R)]
-    check[0][0].add(board[0][0])
-    queue = deque([(0, 0, board[0][0])])
+def solution(N, M, arr):
 
-    ans = 1
-    while queue:
-        row, col, alpha = queue.popleft()
-        ans = max(ans, len(alpha))
+    inside = lambda row, col: 0 <= row < N and 0 <= col < M
+
+    def backtrack(srow, scol, check, cnt):
+        nonlocal ans
+        ans = max(ans, cnt)
         for d in range(4):
-            nrow, ncol = row + drow[d], col + dcol[d]
-            if 0 <= nrow < R and 0 <= ncol < C:
-                if board[nrow][ncol] not in alpha and alpha + board[nrow][ncol] not in check[nrow][ncol]:
-                    check[nrow][ncol].add(alpha + board[nrow][ncol])
-                    queue.append((nrow, ncol, alpha + board[nrow][ncol]))
+            nrow, ncol = srow + drow[d], scol + dcol[d]
+            if inside(nrow, ncol):
+                sign = arr[nrow][ncol]
+                if sign not in check:
+                    check.add(sign)
+                    backtrack(nrow, ncol, check, cnt + 1)
+                    check.discard(sign)
+
+    ans = 0
+    backtrack(0, 0, set(arr[0][0]), 1)
 
     return ans
 
-R, C = map(int, input().split())
-board = [list(input().rstrip()) for _ in range(R)]
-print(solution(R, C, board))
+N, M = map(int, input().split())
+arr = [list(input().rstrip()) for _ in range(N)]
+print(solution(N, M, arr))
