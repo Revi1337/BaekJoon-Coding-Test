@@ -1,34 +1,38 @@
-""" BackTracking """
-def solution(n, m, friends):
-    friend_cnt = n
-    relationships = [[] for _ in range(friend_cnt)]
-    for friend1, friend2, in friends:
-        relationships[friend1].append(friend2)
-        relationships[friend2].append(friend1)
+# 2026-04-16
+# https://www.acmicpc.net/problem/13023
+# ABCDE
 
-    answer = 0
-    def dfs(friend, depth):
-        nonlocal answer
+import sys
+
+sys.setrecursionlimit(10 ** 5)
+
+def solution(N, M, E):
+
+    graph = [[] for _ in range(N)]
+    for v1, v2 in E:
+        graph[v1].append(v2)
+        graph[v2].append(v1)
+
+    def dfs(n, depth):
         if depth == 4:
-            answer = 1
-            return
-        for next_friend in relationships[friend]:
-            if not check[next_friend]:
-                check[next_friend] = 1
-                dfs(next_friend, depth + 1)
-                check[next_friend] = 0
-        return answer
+            return 1
 
-    for friend in range(friend_cnt):
-        check = [0] * friend_cnt
-        if not check[friend]:
-            check[friend] = 1
-            answer = dfs(friend, 0)
-            if answer: break
+        for nn in graph[n]:
+            if not check[nn]:
+                check[nn] = 1
+                if dfs(nn, depth + 1):
+                    return 1
+                check[nn] = 0
+        return 0
 
-    return answer
+    for n in range(N):
+        check = [0] * N
+        check[n] = 1
+        if dfs(n, 0):
+            return 1
 
-n, m = map(int, input().split())
-friends = [list(map(int, input().split())) for _ in range(m)]
-print(solution(n, m, friends))
+    return 0
 
+N, M = map(int, input().split())
+E = [list(map(int, input().split())) for _ in range(M)]
+print(solution(N, M, E))
