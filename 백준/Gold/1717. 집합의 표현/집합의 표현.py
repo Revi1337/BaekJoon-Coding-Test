@@ -1,38 +1,38 @@
+# 2026-04-18
+# https://www.acmicpc.net/problem/1717
+# 집합의 표현
+# Union-Find
+
 import sys
 
-sys.setrecursionlimit(10 ** 5)
+sys.setrecursionlimit(10 ** 7)
 
-"""
-V3. Advanced Union-Find (Include Path Compress & Rank)
-"""
-def solution(N, M, opers):
+def solution(N, M, E):
 
     def find(n):
-        if tree[n] == n:
-            return tree[n]
+        if n == parents[n]:
+            return n
 
-        tree[n] = find(tree[n])
-        return tree[n]
+        parents[n] = find(parents[n])
+        return parents[n]
 
     def union(n1, n2):
         r1, r2 = find(n1), find(n2)
-        if rank[r1] < rank[r2]:
-            tree[r1] = r2
-        elif rank[r1] > rank[r2]:
-            tree[r2] = r1
+        if r1 < r2:
+            parents[r2] = r1
         else:
-            tree[r2] = r1
-            rank[r1] += 1
+            parents[r1] = r2
 
-    rank = [0] * (N + 1)
-    tree = [num for num in range(N + 1)]
-    for oper, n1, n2 in opers:
-        if not oper:
+    parents = list(range(N + 1))
+    for op, n1, n2 in E:
+        if not op:
             union(n1, n2)
         else:
-            r1, r2 = find(n1), find(n2)
-            print('YES' if r1 == r2 else 'NO')
+            if find(n1) == find(n2):
+                print('YES')
+            else:
+                print('NO')
 
 N, M = map(int, input().split())
-opers = [list(map(int, input().split())) for _ in range(M)]
-solution(N, M, opers)
+E = [list(map(int, input().split())) for _ in range(M)]
+solution(N, M, E)
