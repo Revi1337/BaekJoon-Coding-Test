@@ -3,18 +3,14 @@
 # 집합의 표현
 # Union-Find
 
-import sys
-
-sys.setrecursionlimit(10 ** 7)
-
 def solution(N, M, E):
 
     def find(n):
-        if n == parents[n]:
-            return n
+        while parents[n] != n:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
 
-        parents[n] = find(parents[n])
-        return parents[n]
+        return n
 
     def union(n1, n2):
         r1, r2 = find(n1), find(n2)
