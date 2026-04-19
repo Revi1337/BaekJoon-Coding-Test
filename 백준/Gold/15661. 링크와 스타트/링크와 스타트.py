@@ -1,11 +1,14 @@
 # 2026-04-19
 # https://www.acmicpc.net/problem/15661
 # 링크와 스타트
-# V2. Backtracking (탐색 범위를 줄이자)
+# V3. Backtracking (탐색 범위를 줄이자) + 간단히 컷엣지
 
 def solution(N, arr):
 
     def backtrack(n, left, right):
+        nonlocal ans
+        if ans == 0:
+            return
         if n == N:
             if left and right:
                 lsm = rsm = 0
@@ -15,7 +18,6 @@ def solution(N, arr):
                 for idx in range(len(right)):
                     for jdx in range(idx + 1, len(right)):
                         rsm += arr[right[idx]][right[jdx]] + arr[right[jdx]][right[idx]]
-                nonlocal ans
                 ans = min(ans, abs(lsm - rsm))
             return
 
