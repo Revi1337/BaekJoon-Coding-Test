@@ -1,6 +1,7 @@
-import sys
-
-input = sys.stdin.readline
+# 2026-04-19
+# https://www.acmicpc.net/problem/15661
+# 링크와 스타트
+# Backtracking
 
 def solution(N, arr):
 
@@ -10,9 +11,7 @@ def solution(N, arr):
             return
         if n == N:
             if right:
-                diff = abs(lsm - rsm)
-                if diff < ans:
-                    ans = diff
+                ans = min(ans, abs(lsm - rsm))
             return
 
         left.append(n)
@@ -36,3 +35,4 @@ def solution(N, arr):
 N = int(input())
 arr = [list(map(int, input().split())) for _ in range(N)]
 print(solution(N, arr))
+
