@@ -1,17 +1,17 @@
-import sys
+# 2026-04-19
+# https://www.acmicpc.net/problem/18116
+# 로봇 조립
+# Union-Find
 
-input = sys.stdin.readline
+def solution(N, E):
 
-def solution(N, OP):
-
-    LIMIT = 1_000_000
+    LIMIT = 1_000_001
 
     def find(n):
-        if parents[n] == n:
-            return n
-
-        parents[n] = find(parents[n])
-        return parents[n]
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
 
     def union(n1, n2):
         r1, r2 = find(n1), find(n2)
@@ -22,17 +22,16 @@ def solution(N, OP):
             parents[r1] = r2
             cnts[r2] += cnts[r1]
 
-    parents, cnts = list(range(LIMIT + 1)), [1] * (LIMIT + 1)
-    for op, *lst, in OP:
-        if op == 'I':
-            n1, n2 = int(lst[0]), int(lst[1])
-            r1, r2 = find(n1), find(n2)
-            if r1 != r2:
+    parents, cnts = list(range(LIMIT)), [1] * LIMIT
+    for lst in E:
+        if lst[0] == 'I':
+            n1, n2 = map(int, lst[1:])
+            if find(n1) != find(n2):
                 union(n1, n2)
         else:
-            n = int(lst[0])
+            n = int(lst[1])
             print(cnts[find(n)])
 
 N = int(input())
-OP = [input().rstrip().split() for _ in range(N)]
-solution(N, OP)
+E = [input().rstrip().split() for _ in range(N)]
+solution(N, E)
