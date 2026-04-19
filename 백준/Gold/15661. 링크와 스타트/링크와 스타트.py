@@ -1,33 +1,34 @@
-import sys
-
-input = sys.stdin.readline
+# 2026-04-19
+# https://www.acmicpc.net/problem/15661
+# 링크와 스타트
+# Backtracking
 
 def solution(N, arr):
 
-    def backtrack(n, left, right, lsm, rsm):
-        nonlocal ans
-        if ans == 0:
-            return
+    def backtrack(n, left, right):
         if n == N:
-            if right:
+            if left and right:
+                lsm = rsm = 0
+                for idx in range(len(left)):
+                    for jdx in range(idx + 1, len(left)):
+                        lsm += arr[left[idx]][left[jdx]] + arr[left[jdx]][left[idx]]
+                for idx in range(len(right)):
+                    for jdx in range(idx + 1, len(right)):
+                        rsm += arr[right[idx]][right[jdx]] + arr[right[jdx]][right[idx]]
+                nonlocal ans
                 ans = min(ans, abs(lsm - rsm))
             return
 
         left.append(n)
-        backtrack(n + 1, left, right, lsm + sum(cache[n][m] for m in left), rsm)
+        backtrack(n + 1, left, right)
         left.pop()
 
         right.append(n)
-        backtrack(n + 1, left, right, lsm, rsm + sum(cache[n][m] for m in right))
+        backtrack(n + 1, left, right)
         right.pop()
 
-    cache = [[0] * N for _ in range(N)]
-    for idx in range(N):
-        for jdx in range(N):
-            cache[idx][jdx] = arr[idx][jdx] + arr[jdx][idx]
-
     ans = 100 * (N ** 2)
-    backtrack(1, [0], [], 0, 0)
+    backtrack(0, [], [])
 
     return ans
 
