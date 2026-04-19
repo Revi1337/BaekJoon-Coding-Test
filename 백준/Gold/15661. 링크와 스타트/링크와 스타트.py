@@ -1,7 +1,7 @@
 # 2026-04-19
 # https://www.acmicpc.net/problem/15661
 # 링크와 스타트
-# Backtracking
+# V2. Backtracking (탐색 범위를 줄이자)
 
 def solution(N, arr):
 
@@ -28,7 +28,7 @@ def solution(N, arr):
         right.pop()
 
     ans = 100 * (N ** 2)
-    backtrack(0, [], [])
+    backtrack(1, [0], [])
 
     return ans
 
