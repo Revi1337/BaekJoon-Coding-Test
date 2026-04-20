@@ -1,41 +1,36 @@
-# 2026-04-19
+# 2026-04-20
 # https://www.acmicpc.net/problem/11085
 # 군사 이동
-# V1. Binary Search + BFS
-
-from collections import deque
+# V2. Kruskal (역방향 Kruskal. 간선이 큰순으로 정렬)
 
 def solution(P, W, start, end, E):
 
-    def possible(limit):
-        check = [0] * P
-        queue = deque([start])
-        check[start] = 1
+    def find(n):
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
 
-        while queue:
-            n = queue.popleft()
-            if n == end:
-                return True
-            for nn, w in graph[n]:
-                if not check[nn] and w >= limit:
-                    check[nn] = True
-                    queue.append(nn)
-        return False
+    def union(n1, n2):
+        r1, r2 = find(n1), find(n2)
+        if r1 < r2:
+            parents[r2] = r1
+        else:
+            parents[r1] = r2
 
     graph = [[] for _ in range(P)]
     for a, b, w in E:
-        graph[a].append((b, w))
-        graph[b].append((a, w))
+        graph[a].append([b, w])
+        graph[b].append([a, w])
 
-    left, right = 1, 1000
-    while left <= right:
-        mid = (left + right) // 2
-        if possible(mid):
-            left = mid + 1
-        else:
-            right = mid - 1
+    E.sort(key=lambda x: -x[2])
+    parents = list(range(P))
+    for n1, n2, cost in E:
+        union(n1, n2)
+        if find(start) == find(end):
+            return cost
 
-    return left - 1
+    return 0 # Cannot Be Possible
 
 P, W = map(int, input().split())
 C, V = map(int, input().split())
