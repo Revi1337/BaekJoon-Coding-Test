@@ -1,36 +1,39 @@
 # 2026-04-20
 # https://www.acmicpc.net/problem/1939
 # 중량제한
-# V2. Binary Search + 최대힙(Dijkstra는 아님)
-
-import heapq
+# V3. Binary Search + Kruskal 변형 (간선 내림차순 + Union-Find 기반 연결 가능성 판별)
 
 def solution(N, M, E, arr):
 
     st, end = arr
 
+    def find(n):
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
+
+    def union(n1, n2):
+        r1, r2 = find(n1), find(n2)
+        if r1 < r2:
+            parents[r2] = r1
+        else:
+            parents[r1] = r2
+
     def possible(lim):
-        check = [0] * (N + 1)
-        check[st] = 1
-        pq = [[0, st]]
-        while pq:
-            _, n = heapq.heappop(pq)
-            if n == end:
-                return True
-            for nn, nl in graph[n]:
-                if not check[nn] and nl >= lim:
-                    check[nn] = 1
-                    heapq.heappush(pq, [-nl, nn])
+        for a, b, c in E:
+            if c >= lim:
+                union(a, b)
+                if find(st) == find(end):
+                    return True
         return False
 
-    graph = [[] for _ in range(N + 1)]
-    for v1, v2, lim in E:
-        graph[v1].append([v2, lim])
-        graph[v2].append([v1, lim])
+    E.sort(key=lambda x: -x[2])
 
     left, right = 1, 1_000_000_000
     while left <= right:
         mid = (left + right) // 2
+        parents = list(range(N + 1))
         if possible(mid):
             left = mid + 1
         else:
