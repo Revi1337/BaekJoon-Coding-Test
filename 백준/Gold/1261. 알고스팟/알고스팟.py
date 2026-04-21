@@ -1,29 +1,37 @@
-import sys
-from collections import deque
+# 2026-04-21
+# https://www.acmicpc.net/problem/1261
+# 알고스팟
+# V2. dijkstra
 
-input = sys.stdin.readline
+import heapq
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(m, n, miro):
-    miro[0][0] = -1
-    queue = deque([(0, 0, 0)])
-    while queue:
-        row, col, cnt = queue.popleft()
-        if (row, col) == (n - 1, m - 1):
-            return cnt
+def solution(N, M, arr):
+
+    inside = lambda row, col: 0 <= row < N and 0 <= col < M
+
+    INF = float('inf')
+    dist = [[INF] * M for _ in range(N)]
+    dist[0][0] = 0
+    pq = [[0, 0, 0]]
+
+    while pq:
+        cost, row, col = heapq.heappop(pq)
+        if cost > dist[row][col]:
+            continue
+        if row == N - 1 and col == M - 1:
+            return dist[row][col]
         for d in range(4):
-            nrow = row + drow[d]
-            ncol = col + dcol[d]
-            if (0 <= nrow < n) and (0 <= ncol < m) and (miro[nrow][ncol] != -1):
-                if miro[nrow][ncol] == 0:
-                    queue.appendleft((nrow, ncol, cnt))
-                elif miro[nrow][ncol] == 1:
-                    queue.append((nrow, ncol, cnt + 1))
-                miro[nrow][ncol] = -1
+            nrow, ncol = row + drow[d], col + dcol[d]
+            if inside(nrow, ncol):
+                if cost + arr[nrow][ncol] < dist[nrow][ncol]:
+                    dist[nrow][ncol] = cost + arr[nrow][ncol]
+                    heapq.heappush(pq, [dist[nrow][ncol], nrow, ncol])
 
+    return None # Impossible
 
-m, n = map(int, input().split())
-miro = [list(map(int, input().rstrip())) for _ in range(n)]
-print(solution(m, n, miro))
+M, N = map(int, input().split())
+arr = [list(map(int, list(input().rstrip()))) for _ in range(N)]
+print(solution(N, M, arr))
