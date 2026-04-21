@@ -17,12 +17,13 @@ def solution(N, K):
             continue
         for nn in n - 1, n + 1, n * 2:
             if 0 <= nn <= 200_000:
-                if nn == n * 2 and dist[n] < dist[nn]:
-                    dist[nn] = dist[n]
+                if nn == n * 2 and c < dist[nn]:
+                    dist[nn] = c
                     heapq.heappush(pq, [dist[nn], nn])
-                elif dist[n] + 1 < dist[nn]:
-                    dist[nn] = dist[n] + 1
+                elif c + 1 < dist[nn]:
+                    dist[nn] = c + 1
                     heapq.heappush(pq, [dist[nn], nn])
+
     return dist[K]
 
 N, K = map(int, input().split())
