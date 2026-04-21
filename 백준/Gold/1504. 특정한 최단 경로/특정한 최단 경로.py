@@ -1,46 +1,46 @@
-import sys
+# 2026-04-21
+# https://www.acmicpc.net/problem/1504
+# 특정한 최단 경로 (좋은 문제인듯?)
+# 2차원 dist 가 필요없긴한데.. min() 쪽에서 가독성을 위해 
+# dijkstra
+
 import heapq
 
-input = sys.stdin.readline
+def solution(N, E, EE, b1, b2):
 
-def solution(n, e, edges, v1, v2):
-    graph = [[] for _ in range(n + 1)]
-    for road1, road2, cost in edges:
-        graph[road1].append([road2, cost])
-        graph[road2].append([road1, cost])
+    INF = float('inf')
 
-    def dijkstra(entrypoint):
-        costs = [float('inf')] * (n + 1)
-        costs[entrypoint] = 0
-        queue = []
-        heapq.heappush(queue, [costs[entrypoint], entrypoint])
-        while queue:
-            cost, road = heapq.heappop(queue)
-            if cost > costs[road]:
+    def dijkstra(st):
+        dist[st][st] = 0
+        pq = [[dist[st][st], st]]
+        while pq:
+            c, n = heapq.heappop(pq)
+            if c > dist[st][n]:
                 continue
-            for next_road, next_cost in graph[road]:
-                predicate_cost = cost + next_cost
-                if predicate_cost < costs[next_road]:
-                    costs[next_road] = predicate_cost
-                    heapq.heappush(queue, [predicate_cost, next_road])
-        return costs
+            for nn, nc in graph[n]:
+                if c + nc < dist[st][nn]:
+                    dist[st][nn] = c + nc
+                    heapq.heappush(pq, [dist[st][nn], nn])
 
-    entrypoint = dijkstra(1)
-    bridge1 = dijkstra(v1)
-    bridge2 = dijkstra(v2)
+    graph = [[] for _ in range(N + 1)]
+    for v1, v2, c in EE:
+        graph[v1].append([v2, c])
+        graph[v2].append([v1, c])
 
-    answer = min(
-        entrypoint[v1] + bridge1[v2] + bridge2[n], # 1 --> 2, 2 --> 3, 3 --> 4
-        entrypoint[v2] + bridge2[v1] + bridge1[n], # 1 --> 3, 3 --> 2, 2 --> 4
+    dist = [[INF] * (N + 1) for _ in range(N + 1)]
+    dijkstra(1)
+    dijkstra(b1)
+    dijkstra(b2)
+
+    ans = min(
+        dist[1][b1] + dist[b1][b2] + dist[b2][N],
+        dist[1][b2] + dist[b2][b1] + dist[b1][N]
     )
 
-    if answer == float('inf'):
-        return -1
-    else:
-        return answer
+    return ans if ans != INF else -1
 
+N, E = map(int, input().split())
+EE = [list(map(int, input().split())) for _ in range(E)]
+b1, b2 = map(int, input().split())
+print(solution(N, E, EE, b1, b2))
 
-n, e = map(int, input().split())
-edges = [list(map(int, input().split())) for _ in range(e)]
-v1, v2 = map(int, input().split())
-print(solution(n, e, edges, v1, v2))
