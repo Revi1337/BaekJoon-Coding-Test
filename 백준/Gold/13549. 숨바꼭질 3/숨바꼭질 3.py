@@ -1,26 +1,30 @@
-from collections import deque
-import sys
+# 2026-04-21
+# https://www.acmicpc.net/problem/13549
+# 숨바꼭질 3
+# dijkstra
 
-input = sys.stdin.readline
+import heapq
 
-def solution(n, k):
-    time = [-1] * 100_001
-    time[n] = 0
-    queue = deque([n])
-    if n == k:
-        return 0
-    while queue:
-        curr = queue.popleft()
-        if curr == k:
-            return time[k]
-        # for next in [curr - 1, curr + 1, curr * 2]:
-        for next in [curr * 2, curr - 1, curr + 1]:
-            if (0 <= next <= 100_000) and (time[next] == -1):
-                if curr * 2 == next:
-                    time[next] = time[curr]
-                else:
-                    time[next] = time[curr] + 1
-                queue.append(next)
+def solution(N, K):
+    INF = float('inf')
+    dist = [INF] * 200_001
+    dist[N] = 0
+    pq = [[dist[N], N]]
 
-n, k = map(int, input().split())
-print(solution(n, k))
+    while pq:
+        c, n = heapq.heappop(pq)
+        if c > dist[n]:
+            continue
+        for nn in n - 1, n + 1, n * 2:
+            if 0 <= nn <= 200_000:
+                if nn == n * 2 and dist[n] < dist[nn]:
+                    dist[nn] = dist[n]
+                    heapq.heappush(pq, [dist[nn], nn])
+                elif dist[n] + 1 < dist[nn]:
+                    dist[nn] = dist[n] + 1
+                    heapq.heappush(pq, [dist[nn], nn])
+    return dist[K]
+
+N, K = map(int, input().split())
+print(solution(N, K))
+
