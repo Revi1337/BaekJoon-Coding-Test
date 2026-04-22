@@ -1,29 +1,37 @@
-def solution(N, M, R, T, edges):
+# 2026-04-22
+# https://www.acmicpc.net/problem/14938
+# 서강그라운드
+# V1. Floyd-Warshall
 
-    def dfs(v, dist, dists):
-        for nv, l in graph[v]:
-            new_dist = dist + l
-            if new_dist <= M and new_dist < dists[nv]:
-                dists[nv] = new_dist
-                dfs(nv, new_dist, dists)
-
+def solution(N, M, R, T, E):
     T.insert(0, 0)
-    graph = [[] for _ in range(N + 1)]
-    for v1, v2, l in edges:
-        graph[v1].append((v2, l))
-        graph[v2].append((v1, l))
 
-    answer = 0
-    for start in range(1, N + 1):
-        dists = [float('inf')] * (N + 1)
-        dists[start] = 0
-        dfs(start, 0, dists)
-        total = sum(T[i] for i in range(1, N + 1) if dists[i] <= M)
-        answer = max(answer, total)
+    INF = float('inf')
+    dist = [[INF] * (N + 1) for _ in range(N + 1)]
+    for n in range(1, N + 1):
+        dist[n][n] = 0
 
-    return answer
+    for a, b, l in E:
+        dist[a][b] = min(dist[a][b], l)
+        dist[b][a] = min(dist[b][a], l)
+
+    for mid in range(1, N + 1):
+        for st in range(1, N + 1):
+            for end in range(1, N + 1):
+                if dist[st][end] > dist[st][mid] + dist[mid][end]:
+                    dist[st][end] = dist[st][mid] + dist[mid][end]
+
+    ans = 0
+    for st in range(1, N + 1):
+        sm = 0
+        for end in range(1, N + 1):
+            if dist[st][end] <= M:
+                sm += T[end]
+        ans = max(ans, sm)
+
+    return ans
 
 N, M, R = map(int, input().split())
-T = list(map(int, input().split())) # N
-edges = [list(map(int, input().split())) for _ in range(R)]
-print(solution(N, M, R, T, edges))
+T = list(map(int, input().split()))
+E = [list(map(int, input().split())) for _ in range(R)]
+print(solution(N, M, R, T, E))
