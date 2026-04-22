@@ -29,27 +29,24 @@ def solution(N, arr1, M, arr2):
     INF = float('inf')
     dist = [[INF] * 501 for _ in range(501)]
     dist[0][0] = 0
-    queue = deque([(dist[0][0], 0, 0)])
+    queue = deque([(0, 0)])
 
     while queue:
-        cost, row, col = queue.popleft()
-        if cost > dist[row][col]:
-            continue
+        row, col = queue.popleft()
         if row == col == 500:
             return dist[500][500]
         for d in range(4):
             nrow, ncol = row + drow[d], col + dcol[d]
             if not inside(nrow, ncol) or arr[nrow][ncol] == DIE:
                 continue
-            if arr[nrow][ncol] == DANGER and cost + 1 < dist[nrow][ncol]:
-                dist[nrow][ncol] = cost + 1
-                queue.append((dist[nrow][ncol], nrow, ncol))
-            elif arr[nrow][ncol] == EMPTY and cost < dist[nrow][ncol]:
-                dist[nrow][ncol] = cost
-                queue.appendleft((dist[nrow][ncol], nrow, ncol))
+            if arr[nrow][ncol] == DANGER and dist[row][col] + 1 < dist[nrow][ncol]:
+                dist[nrow][ncol] = dist[row][col] + 1
+                queue.append((nrow, ncol))
+            elif arr[nrow][ncol] == EMPTY and dist[row][col] < dist[nrow][ncol]:
+                dist[nrow][ncol] = dist[row][col]
+                queue.appendleft((nrow, ncol))
 
     return -1
-
 
 N = int(input())
 arr1 = [list(map(int, input().split())) for _ in range(N)]
