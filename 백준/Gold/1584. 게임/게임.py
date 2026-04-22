@@ -1,46 +1,58 @@
-import sys
-from collections import deque
+# 2026-04-22
+# https://www.acmicpc.net/problem/1584
+# 게임
+# V1. bfs(0-1)
 
-input = sys.stdin.readline
+from collections import deque
 
 drow = [-1, 0, 1, 0]
 dcol = [0, 1, 0, -1]
 
-def solution(n, dangers, m, deaths):
-    DEATH = 2
-    DANGER = 1
-    field = [[0 for _ in range(501)] for _ in range(501)]
-    for x1, y1, x2, y2 in dangers:
-        for row in range(min([x1, x2]), max(x1, x2) + 1):
-            for col in range(min([y1, y2]), max(y1, y2) + 1):
-                field[row][col] = DANGER
+def solution(N, arr1, M, arr2):
 
-    for x1, y1, x2, y2 in deaths:
-        for row in range(min([x1, x2]), max([x1, x2]) + 1):
-            for col in range(min([y1, y2]), max([y1, y2]) + 1):
-                field[row][col] = DEATH
+    inside = lambda row, col: 0 <= row <= 500 and 0 <= col <= 500
 
-    queue = deque([(0, 0, 0)])
+    EMPTY, DANGER, DIE = 0, 1, -1
+
+    arr = [[0] * 501 for _ in range(501)]
+
+    for r1, c1, r2, c2 in arr1:
+        for row in range(min(r1, r2), max(r1, r2) + 1):
+            for col in range(min(c1, c2), max(c1, c2) + 1):
+                arr[row][col] = DANGER
+
+    for r1, c1, r2, c2 in arr2:
+        for row in range(min(r1, r2), max(r1, r2) + 1):
+            for col in range(min(c1, c2), max(c1, c2) + 1):
+                arr[row][col] = DIE
+
+    INF = float('inf')
+    dist = [[INF] * 501 for _ in range(501)]
+    dist[0][0] = 0
+    queue = deque([(dist[0][0], 0, 0)])
+
     while queue:
-        row, col, time = queue.popleft()
-        if row == 500 and col == 500:
-            print(time)
-            break
+        cost, row, col = queue.popleft()
+        if cost > dist[row][col]:
+            continue
+        if row == col == 500:
+            return dist[500][500]
         for d in range(4):
-            nrow = row + drow[d]
-            ncol = col + dcol[d]
-            if (0 <= nrow < 501) and (0 <= ncol < 501):
-                if field[nrow][ncol] == 0:
-                    field[nrow][ncol] = 2
-                    queue.appendleft((nrow, ncol, time))
-                elif field[nrow][ncol] == 1:
-                    field[nrow][ncol] = 2
-                    queue.append((nrow, ncol, time + 1))
-    else:
-        print(-1)
+            nrow, ncol = row + drow[d], col + dcol[d]
+            if not inside(nrow, ncol) or arr[nrow][ncol] == DIE:
+                continue
+            if arr[nrow][ncol] == DANGER and cost + 1 < dist[nrow][ncol]:
+                dist[nrow][ncol] = cost + 1
+                queue.append((dist[nrow][ncol], nrow, ncol))
+            elif arr[nrow][ncol] == EMPTY and cost < dist[nrow][ncol]:
+                dist[nrow][ncol] = cost
+                queue.appendleft((dist[nrow][ncol], nrow, ncol))
 
-n = int(input())
-dangers = [list(map(int, input().split())) for _ in range(n)]
-m = int(input())
-deaths = [list(map(int, input().split())) for _ in range(m)]
-solution(n, dangers, m, deaths)
+    return -1
+
+
+N = int(input())
+arr1 = [list(map(int, input().split())) for _ in range(N)]
+M = int(input())
+arr2 = [list(map(int, input().split())) for _ in range(M)]
+print(solution(N, arr1, M, arr2))
