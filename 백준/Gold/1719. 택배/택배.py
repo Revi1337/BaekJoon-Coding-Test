@@ -14,8 +14,6 @@ def solution(N, M, E):
     for v1, v2, c in E:
         graph[v1].append([v2, c])
         graph[v2].append([v1, c])
-        trace[v1][v2] = v2
-        trace[v2][v1] = v1
 
     for st in range(1, N + 1):
         dist[st][st] = 0
