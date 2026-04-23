@@ -12,7 +12,7 @@ def solution(N, M, A, B, C, E):
 
     def possible(lim):
         """base on dijkstra"""
-        dist, mxs = [INF] * (N + 1), [0] * (N + 1)
+        dist = [INF] * (N + 1)
         dist[A] = 0
         pq = [[dist[A], A]]
 
@@ -21,33 +21,31 @@ def solution(N, M, A, B, C, E):
             if c > dist[n]:
                 continue
             if n == B:
-                return dist[B] != INF and dist[B] <= C and mxs[B] <= lim
+                return dist[B] if dist[B] <= C else None
             for nn, nc in graph[n]:
-                if c + nc < dist[nn]:
+                if c + nc < dist[nn] and nc <= lim:
                     dist[nn] = c + nc
-                    mxs[nn] = max(mxs[nn], nc)
                     heapq.heappush(pq, [dist[nn], nn])
-        return False
+        return None
 
     graph = [[] for _ in range(N + 1)]
+    arr = []
     for v1, v2, c in E:
         graph[v1].append([v2, c])
         graph[v2].append([v1, c])
+        arr.append(c)
 
-    left, right = 2_000_000, 1
-    for _, _, c in E:
-        left, right = min(left, c), max(right, c)
-
-    ans = []
+    arr.sort()
+    ans, left, right = INF, 0, len(arr) - 1
     while left <= right:
         mid = (left + right) // 2
-        if possible(mid):
-            ans.append(mid)
+        if possible(arr[mid]):
+            ans = min(ans, arr[mid])
             right = mid - 1
         else:
             left = mid + 1
 
-    return min(ans) if ans else -1
+    return ans if ans != INF else -1
 
 N, M, A, B, C = map(int, input().split())
 E = [list(map(int, input().split())) for _ in range(M)]
