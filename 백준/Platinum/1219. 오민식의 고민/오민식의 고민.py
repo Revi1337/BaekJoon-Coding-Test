@@ -1,22 +1,24 @@
-import sys
+# 2026-04-24
+# https://www.acmicpc.net/problem/1219
+# 오민식의 고민
+# bellman-ford
+
 from collections import deque
 
-input = sys.stdin.readline
-
-def solution(N, S, EN, M, E, C):
+def solution(N, st, end, M, E, C):
     INF = -float('inf')
-    costs = [INF] * N
-    costs[S] = C[S]
+    dist = [INF] * N
+    dist[st] = C[st]
 
     cyc = set()
-    for seq in range(N):
+    for n in range(N):
         for v1, v2, c in E:
-            if costs[v1] - c + C[v2] > costs[v2]:
-                costs[v2] = costs[v1] - c + C[v2]
-                if seq == N - 1:
+            if dist[v1] - c + C[v2] > dist[v2]:
+                dist[v2] = dist[v1] - c + C[v2]
+                if n == N - 1:
                     cyc.add(v2)
 
-    if costs[EN] == INF:
+    if dist[end] == INF:
         return 'gg'
 
     if cyc:
@@ -29,16 +31,16 @@ def solution(N, S, EN, M, E, C):
             check[n] = 1
             while queue:
                 n = queue.popleft()
-                if n == EN:
+                if n == end:
                     return 'Gee'
                 for nn in graph[n]:
                     if not check[nn]:
                         check[nn] = 1
                         queue.append(nn)
 
-    return costs[EN]
+    return dist[end]
 
-N, S, EN, M = map(int, input().split())
+N, st, end, M = map(int, input().split())
 E = [list(map(int, input().split())) for _ in range(M)]
 C = list(map(int, input().split()))
-print(solution(N, S, EN, M, E, C))
+print(solution(N, st, end, M, E, C))
