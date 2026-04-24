@@ -2,32 +2,38 @@
 # https://www.acmicpc.net/problem/1647
 # 도시 분할 계획
 # mst
-# V1. kruskal
+# V2. prim
+
+import heapq
+import random
 
 def solution(N, M, E):
+    graph = [[] for _ in range(N + 1)]
+    for v1, v2, c in E:
+        graph[v1].append([v2, c])
+        graph[v2].append([v1, c])
 
-    def find(n):
-        while n != parents[n]:
-            parents[n] = parents[parents[n]]
-            n = parents[n]
-        return n
+    INF = float('inf')
+    dist, check = [INF] * (N + 1), [0] * (N + 1)
 
-    def union(n1, n2):
-        r1, r2 = find(n1), find(n2),
-        if r1 < r2:
-            parents[r2] = r1
-        else:
-            parents[r1] = r2
+    st = random.randint(1, N)
+    dist[st] = 0
 
-    E.sort(key=lambda x: x[2])
-    parents = list(range(N + 1))
+    ans = mx = 0
+    pq = [[0, st]]
+    while pq:
+        cc, cn = heapq.heappop(pq)
+        if check[cn]:
+            continue
 
-    ans, mx = 0, 1
-    for v1, v2, cost in E:
-        if find(v1) != find(v2):
-            ans += cost
-            mx = max(mx, cost)
-            union(v1, v2)
+        check[cn] = 1
+        ans += cc
+        mx = max(mx, cc)
+
+        for nn, nc in graph[cn]:
+            if not check[nn] and nc < dist[nn]:
+                dist[nn] = nc
+                heapq.heappush(pq, [nc, nn])
 
     return ans - mx
 
