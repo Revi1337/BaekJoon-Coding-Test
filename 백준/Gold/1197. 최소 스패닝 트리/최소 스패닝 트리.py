@@ -1,28 +1,34 @@
-import heapq
-import sys
+# 2026-04-24
+# https://www.acmicpc.net/problem/1197
+# 최소 스패닝 트리
+# mst
+# V1. Kruskal
 
-input = sys.stdin.readline
+def solution(V, E, EE):
 
-def solution(v, e, edges):
-    graph = [[] for _ in range(v + 1)]
-    for v1, v2, cost in edges:
-        graph[v1].append((v2, cost))
-        graph[v2].append((v1, cost))
+    def find(n):
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
 
-    connect = [-1] * (v + 1)
-    queue = []
-    heapq.heappush(queue, (0, 1))
-    while queue:
-        cost, node = heapq.heappop(queue)
-        if connect[node] != -1:
-            continue
-        connect[node] = cost
-        for next_node, next_cost in graph[node]:
-            if connect[next_node] == -1:
-                heapq.heappush(queue, (next_cost, next_node))
+    def union(n1, n2):
+        r1, r2 = find(n1), find(n2),
+        if r1 < r2:
+            parents[r2] = r1
+        else:
+            parents[r1] = r2
 
-    return sum(connect[1:])
+    EE.sort(key=lambda x: x[2])
+    parents = list(range(V + 1))
+    ans = 0
+    for n1, n2, c in EE:
+        if find(n1) != find(n2):
+            union(n1, n2)
+            ans += c
 
-v, e = map(int, input().split())
-edges = [list(map(int, input().split())) for _ in range(e)]
-print(solution(v, e, edges))
+    return ans
+
+V, E = map(int, input().split())
+EE = [list(map(int, input().split())) for _ in range(E)]
+print(solution(V, E, EE))
