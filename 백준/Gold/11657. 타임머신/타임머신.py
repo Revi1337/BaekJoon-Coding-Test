@@ -1,37 +1,23 @@
-import sys
+# 2026-04-24
+# https://www.acmicpc.net/problem/11657
+# 타임머신
+# bellman-ford
 
-input = sys.stdin.readline
-
-def solution(n, m, edges):
-    node_cnt = n
+def solution(N, M, E):
     INF = float('inf')
-    negative_cycle = False
+    dist = [INF] * (N + 1)
 
-    def bellman_ford(entrypoint):
-        distance = [INF] * (node_cnt + 1)
-        distance[entrypoint] = 0
+    dist[1] = 0
+    for n in range(N):
+        for v1, v2, c in E:
+            if dist[v1] + c < dist[v2]:
+                dist[v2] = dist[v1] + c
+                if n == N - 1:
+                    print(-1)
+                    return
 
-        for node in range(node_cnt):
-            for curr_node, next_node, edge_cost in edges:
-                predicate_cost = distance[curr_node] + edge_cost
-                if predicate_cost < distance[next_node] and distance[curr_node] != INF:
-                    distance[next_node] = distance[curr_node] + edge_cost
-                    if node == node_cnt - 1:
-                        nonlocal negative_cycle
-                        negative_cycle = True
-        return distance
+    print(*[c if c != INF else -1 for c in dist[2:]], sep='\n')
 
-    negative_graph = bellman_ford(1)
-
-    if negative_cycle:
-        print("-1")
-    else:
-        for node in range(2, node_cnt + 1):
-            if negative_graph[node] == INF:
-                print("-1")
-            else:
-                print(negative_graph[node])
-
-n, m = map(int, input().split())
-edges = [list(map(int, input().split())) for _ in range(m)]
-solution(n, m, edges)
+N, M = map(int, input().split())
+E = [list(map(int, input().split())) for _ in range(M)]
+solution(N, M, E)
