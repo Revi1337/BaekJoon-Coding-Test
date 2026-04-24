@@ -2,30 +2,31 @@
 # https://www.acmicpc.net/problem/1922
 # 네트워크 연결
 # mst
-# V1. prim
-
-import heapq
-import random
+# V2. kruskal
 
 def solution(N, M, E):
-    graph = [[] for _ in range(N + 1)]
-    for v1, v2, c in E:
-        graph[v1].append([v2, c])
-        graph[v2].append([v1, c])
 
-    st = random.randint(1, N)
-    check = [0] * (N + 1)
-    pq = [[0, st]]
+    def find(n):
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
+
+    def union(n1, n2):
+        r1, r2 = find(n1), find(n2),
+        if r1 < r2:
+            parents[r2] = r1
+        else:
+            parents[r1] = r2
+
+    E.sort(key=lambda x: x[2])
+    parents = list(range(N + 1))
 
     ans = 0
-    while pq:
-        cc, cn = heapq.heappop(pq)
-        if check[cn]:
-            continue
-        check[cn] = 1
-        ans += cc
-        for nn, nc in graph[cn]:
-            heapq.heappush(pq, [nc, nn])
+    for n1, n2, c in E:
+        if find(n1) != find(n2):
+            union(n1, n2)
+            ans += c
 
     return ans
 
