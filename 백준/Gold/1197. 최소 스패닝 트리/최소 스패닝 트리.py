@@ -2,30 +2,31 @@
 # https://www.acmicpc.net/problem/1197
 # 최소 스패닝 트리
 # mst
-# V1. Kruskal
+# V2. prim
+
+import heapq
+import random
 
 def solution(V, E, EE):
+    graph = [[] for _ in range(V + 1)]
+    for v1, v2, c in EE:
+        graph[v1].append([v2, c])
+        graph[v2].append([v1, c])
 
-    def find(n):
-        while n != parents[n]:
-            parents[n] = parents[parents[n]]
-            n = parents[n]
-        return n
+    st = random.randint(1, V)
+    check = [0] * (V + 1)
 
-    def union(n1, n2):
-        r1, r2 = find(n1), find(n2),
-        if r1 < r2:
-            parents[r2] = r1
-        else:
-            parents[r1] = r2
-
-    EE.sort(key=lambda x: x[2])
-    parents = list(range(V + 1))
     ans = 0
-    for n1, n2, c in EE:
-        if find(n1) != find(n2):
-            union(n1, n2)
-            ans += c
+    pq = [[0, st, st]]
+    while pq:
+        c, cn, pn = heapq.heappop(pq)
+        if check[cn]:
+            continue
+        check[cn] = 1
+        ans += c
+        for nn, nc in graph[cn]:
+            if not check[nn]:
+                heapq.heappush(pq, [nc, nn, cn])
 
     return ans
 
