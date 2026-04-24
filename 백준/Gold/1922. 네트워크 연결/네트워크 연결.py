@@ -1,33 +1,35 @@
+# 2026-04-24
+# https://www.acmicpc.net/problem/1922
+# 네트워크 연결
+# mst
+# V1. prim
+
 import heapq
-import sys
+import random
 
-input = sys.stdin.readline
+def solution(N, M, E):
+    graph = [[] for _ in range(N + 1)]
+    for v1, v2, c in E:
+        graph[v1].append([v2, c])
+        graph[v2].append([v1, c])
 
-def solution(V, E, edges):
-    graph = [[0] * (V + 1) for _ in range(V + 1)]
-    for v1, v2, cost in edges:
-        graph[v1][v2] = cost
-        graph[v2][v1] = cost
+    st = random.randint(1, N)
+    check = [0] * (N + 1)
+    pq = [[0, st]]
 
-    def prim(entrypoint):
-        total_cost = 0
-        connect = [0] * (V + 1)
-        queue = []
-        heapq.heappush(queue, (0, entrypoint))
-        while queue:
-            cost, node = heapq.heappop(queue)
-            if connect[node]:
-                continue
-            connect[node] = 1
-            total_cost += cost
-            for next_node in range(1, V + 1):
-                if graph[node][next_node] != 0 and not connect[next_node]:
-                    heapq.heappush(queue, (graph[node][next_node], next_node))
-        return total_cost
+    ans = 0
+    while pq:
+        cc, cn = heapq.heappop(pq)
+        if check[cn]:
+            continue
+        check[cn] = 1
+        ans += cc
+        for nn, nc in graph[cn]:
+            heapq.heappush(pq, [nc, nn])
 
-    return prim(1)
+    return ans
 
-n = int(input().rstrip())
-m = int(input().rstrip())
-edges = [list(map(int, input().split())) for _ in range(m)]
-print(solution(n, m, edges))
+N = int(input().rstrip())
+M = int(input().rstrip())
+E = [list(map(int, input().split())) for _ in range(M)]
+print(solution(N, M, E))
