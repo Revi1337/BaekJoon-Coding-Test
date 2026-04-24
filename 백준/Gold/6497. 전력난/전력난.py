@@ -1,34 +1,34 @@
-import sys
-
-input = sys.stdin.readline
-sys.setrecursionlimit(10 ** 6)
+# 2026-04-24
+# https://www.acmicpc.net/problem/6497
+# 전력난
+# mst
+# V1. kruskal
 
 def solution(M, N, E):
 
     def find(n):
-        if n == parents[n]:
-            return n
-
-        parents[n] = find(parents[n])
-        return parents[n]
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
 
     def union(n1, n2):
-        root1, root2 = find(n1), find(n2)
-        if root2 > root1:
-            parents[root2] = root1
+        r1, r2 = find(n1), find(n2)
+        if r1 < r2:
+            parents[r2] = r1
         else:
-            parents[root1] = root2
+            parents[r1] = r2
 
-    N, M = M, N
-    tot, ans, parents = 0, 0, list(range(N + 1))
-    E.sort(key = lambda x: x[2])
-    for v1, v2, cost in E:
-        tot += cost
+    E.sort(key=lambda x: x[2])
+    parents = list(range(N))
+    sm = mst = 0
+    for v1, v2, c in E:
+        sm += c
         if find(v1) != find(v2):
             union(v1, v2)
-            ans += cost
+            mst += c
 
-    return tot - ans
+    return sm - mst
 
 while True:
     M, N = map(int, input().rstrip().split())
