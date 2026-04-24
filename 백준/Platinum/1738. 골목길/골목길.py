@@ -27,19 +27,20 @@ def solution(N, M, E):
     for v1, v2, c in E:
         graph[v1].append(v2)
 
+    queue = deque(cyc_node)
+    check = [0] * (N + 1)
     for n in cyc_node:
-        check = [0] * (N + 1)
         check[n] = 1
-        queue = deque([n])
-        while queue:
-            cn = queue.popleft()
-            if cn == N:
-                print(-1)
-                return
-            for nn in graph[cn]:
-                if not check[nn]:
-                    check[nn] = 1
-                    queue.append(nn)
+
+    while queue:
+        cn = queue.popleft()
+        if cn == N:
+            print(-1)
+            return
+        for nn in graph[cn]:
+            if not check[nn]:
+                check[nn] = 1
+                queue.append(nn)
 
     ans = []
     while N != trace[N]:
