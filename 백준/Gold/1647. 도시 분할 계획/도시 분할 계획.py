@@ -1,14 +1,19 @@
+# 2026-04-24
+# https://www.acmicpc.net/problem/1647
+# 도시 분할 계획
+# mst
+# V1. kruskal
+
 def solution(N, M, E):
 
     def find(n):
-        if n == parents[n]:
-            return n
-
-        parents[n] = find(parents[n])
-        return parents[n]
+        while n != parents[n]:
+            parents[n] = parents[parents[n]]
+            n = parents[n]
+        return n
 
     def union(n1, n2):
-        r1, r2 = find(n1), find(n2)
+        r1, r2 = find(n1), find(n2),
         if r1 < r2:
             parents[r2] = r1
         else:
