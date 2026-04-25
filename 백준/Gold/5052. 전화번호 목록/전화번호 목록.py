@@ -12,6 +12,8 @@ def solution(N, W):
             if not trie[char]:
                 return False
             trie = trie[char]
+        if trie:
+            return False
         return True
 
     def insert(word, trie):
@@ -20,7 +22,7 @@ def solution(N, W):
                 trie[char] = {}
             trie = trie[char]
 
-    W.sort()
+    # W.sort()
     trie = {}
     for word in W:
         if can_insert(word, trie):
