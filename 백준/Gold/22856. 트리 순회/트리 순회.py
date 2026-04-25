@@ -1,41 +1,46 @@
+# 2026-04-25
+# https://www.acmicpc.net/problem/22856
+# 트리 순회
+# tree
+# dfs
+
 import sys
 
 input = sys.stdin.readline
-sys.setrecursionlimit(10 ** 7)
+sys.setrecursionlimit(10 ** 6)
 
-def solution(n, nodes):
-    graph = [[] for _ in range(n + 1)]
-    for (p, c1, c2) in nodes:
-        graph[p].append(c1)
-        graph[p].append(c2)
+"""
+이동 횟수 = 2 * (N - 1) - (루트 -> 마지막 노드 거리)
+"""
+def solution(N, E):
 
-    def dfs(node):
-        if not mode:
-            nonlocal total
-            for next_node in graph[node]:
-                if next_node != -1 and not check[next_node]:
-                    total += 1
-                    dfs(next_node)
-                    total += 1
-        else:
-            nonlocal counter
-            if graph[node][1] != -1 and not check[graph[node][1]]:
-                counter += 1
-                dfs(graph[node][1])
+    def find_last():
+        last = 1
+        while tree[last][1] != -1:
+            last = tree[last][1]
+        return last
 
-    check = [0] * (n + 1)
-    mode = 0
-    total = 0
-    dfs(1)
+    def root_to_last(n, depth):
+        if n == last:
+            return depth
+        for nn in tree[n]:
+            if nn != -1:
+                d = root_to_last(nn, depth + 1)
+                if d != -1:
+                    return d
+        return -1
 
-    check = [0] * (n + 1)
-    mode = 1
-    counter = 0
-    dfs(1)
+    tree = [[-1, -1] for _ in range(N + 1)]
+    for pn, left, right in E:
+        tree[pn][0] = left
+        tree[pn][1] = right
 
-    return total - counter
+    root = 1
+    last = find_last()
+    dist = root_to_last(root, 0)
 
+    return 2 * (N - 1) - dist
 
-n = int(input().rstrip())
-nodes = [list(map(int, input().split())) for _ in range(n)]
-print(solution(n, nodes))
+N = int(input())
+E = [list(map(int, input().split())) for _ in range(N)]
+print(solution(N, E))
