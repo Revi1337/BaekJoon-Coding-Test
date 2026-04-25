@@ -1,3 +1,8 @@
+# 2026-04-25
+# https://www.acmicpc.net/problem/5052
+# 전화번호 목록
+# trie
+
 def solution(N, W):
 
     def can_insert(word, trie):
@@ -15,12 +20,13 @@ def solution(N, W):
                 trie[char] = {}
             trie = trie[char]
 
-    W.sort(key=lambda x: len(x))
+    W.sort()
     trie = {}
     for word in W:
-        if not can_insert(word, trie):
+        if can_insert(word, trie):
+            insert(word, trie)
+        else:
             return 'NO'
-        insert(word, trie)
     return 'YES'
 
 T = int(input())
