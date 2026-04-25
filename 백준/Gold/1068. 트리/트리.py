@@ -1,22 +1,30 @@
+# 2026-04-25
+# https://www.acmicpc.net/problem/1068
+# 트리
+# tree
+# dfs(post order 개념을 이용)
+
 def solution(N, P, R):
 
-    def delete(n):
-        P[n] = -100
-        for nn in tree[n]:
-            delete(nn)
+    def cnt_leafs(n):
+        if n == R:
+            return 0
+        childs = [c for c in tree[n] if c != R]
+        if not childs:
+            return 1
+        cnt = 0
+        for c in childs:
+            cnt += cnt_leafs(c)
+        return cnt
 
     root, tree = None, [[] for _ in range(N)]
-    for ch, p in enumerate(P):
-        if p != -1:
-            tree[p].append(ch)
+    for n, pn in enumerate(P):
+        if pn == -1:
+            root = n
+        else:
+            tree[pn].append(n)
 
-    delete(R)
-    ans = 0
-    for n in range(N):
-        if P[n] != -100 and n not in P:
-            ans += 1
-
-    return ans
+    return cnt_leafs(root)
 
 N = int(input())
 P = list(map(int, input().split()))
