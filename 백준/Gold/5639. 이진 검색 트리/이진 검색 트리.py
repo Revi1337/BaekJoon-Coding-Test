@@ -1,33 +1,48 @@
+# 2026-04-25
+# https://www.acmicpc.net/problem/5639
+# 이진 검색 트리
+# tree
+# dfs (pre order -> post order 원복)
+
 import sys
 
 sys.setrecursionlimit(10 ** 5)
 
-def solution(nodes):
+"""
+(pre order) 50 30 24 5 28 45 98 52 60
+ to
+(post order) 5 28 24 45 30 60 52 98 50
+                 
+50 (30 24 5 28 45) (98 52 60)
+50 (30 (24 5 28) (45)) (98 (52 60))
+50 (30 (24 (5) (28)) (45)) (98 (52 (60)))
 
-    def recursive(nodes):
-        if not len(nodes):
+"""
+def solution(arr):
+
+    def rollback(arr):
+        if not arr:
             return
 
-        mid, left, right = nodes[0], [], []
-        for n in range(1, len(nodes)):
-            if mid < nodes[n]:
-                left, right = nodes[1:n], nodes[n:]
+        left, mid, right = [], arr[0], []
+        for idx in range(1, len(arr)):
+            if arr[idx] > mid:
+                left, right = arr[1:idx], arr[idx:]
                 break
         else:
-            left = nodes[1:]
+            left = arr[1:]
 
-        recursive(left)
-        recursive(right)
+        rollback(left)
+        rollback(right)
         print(mid)
 
-    recursive(nodes)
+    rollback(arr)
 
-
-nodes = []
+arr = []
 while True:
     try:
         node = int(input())
-        nodes.append(node)
+        arr.append(node)
     except:
         break
-solution(nodes)
+solution(arr)
