@@ -1,37 +1,56 @@
+# 2026-04-25
+# https://www.acmicpc.net/problem/3584
+# 가장 가까운 공통 조상 (LCA 최적화 전으로 푸는 문제 ㅇㅇ depth 직접 비교 방식)
+# tree
+# dfs
+
 import sys
 
 input = sys.stdin.readline
 sys.setrecursionlimit(10 ** 6)
 
+"""
+1. root 를 구한다.
+2. 간선들로 conn 생성
+3. make_tree 에서 각 정점의 부모노드와 각 정점의 depth 를 구한다.
+4. V1, V2 의 깊이를 맞춘다.
+5. V1, V2 같이 같아질때까지 맞춘다.
+6. 반환한다.
+"""
 def solution(N, E, V1, V2):
 
-    def make_tree(n, pn, lv):
-        lvs[n] = lv
-        for nn in tree[n]:
+    def find_root():
+        freq = [0] * (N + 1)
+        for v1, v2 in E:
+            freq[v2] += 1
+        for n, cnt in enumerate(freq[1:], start=1):
+            if not cnt:
+                return n
+        return None # Impossible
+
+    def make_tree(n, pn):
+        for nn in conn[n]:
             if nn != pn:
-                make_tree(nn, n, lv + 1)
+                parents[nn] = n
+                depths[nn] = depths[n] + 1
+                make_tree(nn, n)
 
-    tree = [[] for _ in range(N + 1)]
-    refers, parents = [[0] * (N + 1) for _ in range(2)]
+    conn = [[] for _ in range(N + 1)]
     for v1, v2 in E:
-        tree[v1].append(v2)
-        parents[v2] = v1
-        refers[v2] += 1
+        conn[v1].append(v2)
 
-    root, lvs = refers[1:].index(min(refers[1:])) + 1, [0] * (N + 1)
-    make_tree(root, -1, 0)
+    depths, parents = [[0] * (N + 1) for _ in range(2)]
+    make_tree(find_root(), -1)
 
-    mxn = V1 if lvs[V1] >= lvs[V2] else V2
-    mnn = V2 if mxn == V1 else V1
-    diff = abs(lvs[V1] - lvs[V2])
-
-    while diff > 0:
+    mxn, mnn = (V2, V1) if depths[V1] < depths[V2] else (V1, V2)
+    dd = depths[mxn] - depths[mnn] # aka. diff of depth
+    while dd > 0:
         mxn = parents[mxn]
-        diff -= 1
+        dd -= 1
 
     while mxn != mnn:
         mxn, mnn = parents[mxn], parents[mnn]
-
+        
     return mxn
 
 T = int(input())
