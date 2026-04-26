@@ -22,17 +22,17 @@ def solution(N, E, M, Q):
                 make_tree(nn, n, d + 1)
 
     def lca(n1, n2):
-        if depths[n1] > depths[n2]:                         
+        if depths[n1] > depths[n2]:
             n1, n2 = n2, n1
-        for idx in range(LOG - 1, -1, -1):                  
-            if depths[n2] - depths[n1] >= (1 << idx):
-                n2 = parents[n2][idx]
-        if n1 == n2:                                        
+        for k in range(LOG - 1, -1, -1):
+            if depths[n2] - depths[n1] >= (1 << k):
+                n2 = parents[n2][k]
+        if n1 == n2:
             return n1
-        for idx in range(LOG - 1, -1, -1):                  
-            if parents[n1][idx] != parents[n2][idx]:
-                n1, n2 = parents[n1][idx], parents[n2][idx]
-        return parents[n1][0]                               
+        for k in range(LOG - 1, -1, -1):
+            if parents[n1][k] != parents[n2][k]:
+                n1, n2 = parents[n1][k], parents[n2][k]
+        return parents[n1][0]
 
     tree = [[] for _ in range(N + 1)]
     for v1, v2 in E:
@@ -43,12 +43,11 @@ def solution(N, E, M, Q):
     parents = [[0] * LOG for _ in range(N + 1)]
     make_tree(1, 1, 0)
 
-    for off in range(1, LOG):
+    for k in range(1, LOG):
         for n in range(1, N + 1):
-            parents[n][off] = parents[parents[n][off - 1]][off - 1]
+            parents[n][k] = parents[parents[n][k - 1]][k - 1]
 
-    for n1, n2 in Q:
-        print(lca(n1, n2))
+    print(*[lca(v1, v2) for v1, v2 in Q], sep='\n')
 
 N = int(input())
 E = [list(map(int, input().split())) for _ in range(N - 1)]
