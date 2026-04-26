@@ -1,42 +1,53 @@
-def solution(node_cnt, edges):
-    level_row = [[] for _ in range(node_cnt + 1)]
-    col = 1
+# 2026-04-26
+# https://www.acmicpc.net/problem/2250
+# 트리의 높이와 너비
+# tree
 
-    def init_graph_and_rootnode():
-        node_metadata = [0] * (node_cnt + 1)
-        graph = [0] * (node_cnt + 1)
-        for curr_node, child1, child2 in edges:
-            node_metadata[curr_node] += 1
-            if child1 != -1:
-                node_metadata[child1] += 1
-            if child2 != -1:
-                node_metadata[child2] += 1
-            graph[curr_node] = [child1, child2]
+import sys
 
-        return graph, node_metadata.index(1)
+input = sys.stdin.readline
+sys.setrecursionlimit((10 ** 4) * 2)
 
-    def dfs(node, level):
+def solution(V, E):
+
+    def find_root():
+        freq = [0] * (N + 1)
+        for n, c1, c2 in E:
+            freq[n] += 1
+            if c1 != -1:
+                freq[c1] += 1
+            if c2 != -1:
+                freq[c2] += 1
+        return freq.index(min(freq[1:]))
+
+    def inorder(n, depth):
         nonlocal col
-        left, right = graph[node]
-        if graph[node][0] != -1:
-            dfs(left, level + 1)
-        level_row[level].append(col)
+        if tree[n][0] != -1:
+            inorder(tree[n][0], depth + 1)
+
+        lvs[depth] = lvs.setdefault(depth, [col, col])
+        lvs[depth][0] = min(lvs[depth][0], col)
+        lvs[depth][1] = max(lvs[depth][1], col)
         col += 1
-        if graph[node][1] != -1:
-            dfs(right, level + 1)
 
-    graph, rootnode = init_graph_and_rootnode()
-    dfs(rootnode, 1)
+        if tree[n][1] != -1:
+            inorder(tree[n][1], depth + 1)
 
-    max_level, max_width = 1, max(level_row[1]) - min(level_row[1]) + 1
-    for level, rows in enumerate(level_row[1:], start=1):
-        if len(rows) >= 2:
-            width = max(rows) - min(rows) + 1
-            if width > max_width:
-                max_level, max_width = level, width
+    tree = [[-1, -1] for _ in range(N + 1)]
+    for n, c1, c2 in E:
+        tree[n][0] = c1
+        tree[n][1] = c2
 
-    print(max_level, max_width)
+    root = find_root()
+    col, lvs = 1, {}
+    inorder(root, 1)
 
-node_cnt = int(input())
-edges = [list(map(int, input().split())) for _ in range(node_cnt)]
-solution(node_cnt, edges)
+    mx = max(lvs[key][1] - lvs[key][0] + 1 for key in lvs)
+    for key in sorted(lvs.keys()):
+        if lvs[key][1] - lvs[key][0] + 1 == mx:
+            print(key, mx)
+            return
+
+N = int(input())
+E = [list(map(int, input().split())) for _ in range(N)]
+solution(N, E)
