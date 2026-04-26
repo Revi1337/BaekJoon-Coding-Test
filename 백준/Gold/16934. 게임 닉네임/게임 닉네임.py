@@ -1,5 +1,8 @@
-# 2025-11-22
+# 2026-04-26
 # https://www.acmicpc.net/problem/16934
+# 게임 닉네임
+# tree
+# trie
 
 import sys
 
@@ -33,3 +36,4 @@ def solution(N, S):
 N = int(input())
 S = [input().rstrip() for _ in range(N)]
 solution(N, S)
+
