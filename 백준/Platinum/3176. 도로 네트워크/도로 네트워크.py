@@ -1,9 +1,10 @@
 import sys
+import math
 
-sys.setrecursionlimit(10 ** 6)
+sys.setrecursionlimit((10 ** 5) * 2)
 input = sys.stdin.readline
 
-LOG = 17
+LOG = math.ceil(math.log2(100000))
 
 def solution(N, E, K, T):
 
@@ -17,8 +18,7 @@ def solution(N, E, K, T):
                 make_tree(nn, d + 1)
 
     def query(a, b):
-        mn = INF
-        mx = 0
+        mn, mx = INF, 0
         if depths[a] < depths[b]:
             a, b = b, a
 
@@ -34,15 +34,10 @@ def solution(N, E, K, T):
 
         for k in range(LOG - 1, -1, -1):
             if parents[a][k] != parents[b][k]:
-                mn = min(mn, mns[a][k], mns[b][k])
-                mx = max(mx, mxs[a][k], mxs[b][k])
-                a = parents[a][k]
-                b = parents[b][k]
+                mn, mx = min(mn, mns[a][k], mns[b][k]), max(mx, mxs[a][k], mxs[b][k])
+                a, b = parents[a][k], parents[b][k]
 
-        mn = min(mn, mns[a][0], mns[b][0])
-        mx = max(mx, mxs[a][0], mxs[b][0])
-
-        return mn, mx
+        return min(mn, mns[a][0], mns[b][0]), max(mx, mxs[a][0], mxs[b][0])
 
     ref = [0] * (N + 1)
     graph = [[] for _ in range(N + 1)]
