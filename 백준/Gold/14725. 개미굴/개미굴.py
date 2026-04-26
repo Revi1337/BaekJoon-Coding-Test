@@ -1,23 +1,35 @@
-def solution(N, edges):
+# 2026-04-25
+# https://www.acmicpc.net/problem/14725
+# 개미굴
+# tree
+# trie
 
-    def put(dic, nodes):
-        if not len(nodes):
-            return
+import sys
 
-        if nodes[0] not in dic:
-            dic[nodes[0]] = {}
-        put(dic[nodes[0]], nodes[1:])
+input = sys.stdin.readline
 
-    def prt(dic, level):
-        for node in sorted(dic):
-            print('--' * level + node)
-            prt(dic[node], level + 1)
+def solution(N, E):
 
-    dic = {}
-    for edge in edges:
-        put(dic, edge[1:])
-    prt(dic, 0)
+    def insert(words, trie):
+        for word in words:
+            if word not in trie:
+                trie[word] = {}
+            trie = trie[word]
+
+    def dfs(word, trie, d):
+        if word:
+            print(f"{'--' * d}{word}")
+        for word in trie:
+            dfs(word, trie[word], d + 1)
+
+    E = [entry[1:] for entry in E]
+    E.sort()
+
+    trie = {}
+    for words in E: insert(words, trie)
+
+    dfs('', trie, -1)
 
 N = int(input())
-edges = [list(input().rstrip().split()) for _ in range(N)]
-solution(N, edges)
+E = [list(input().rstrip().split()) for _ in range(N)]
+solution(N, E)
