@@ -19,17 +19,16 @@ def solution(V, E):
             tree[v1].append([v2, c])
 
     def dfs(n, pn, d):
-        dist[n] = d
+        mn, mc = n, d
         for nn, nc in tree[n]:
             if nn != pn:
-                dfs(nn, n, d + nc)
+                cn, cc = dfs(nn, n, d + nc)
+                if cc > mc:
+                    mn, mc = cn, cc
 
-    dist = [0] * (V + 1)
-    dfs(1, 1, 0)
-    mxn = 1
-    for n, cost in enumerate(dist[1:], start=1):
-        if cost > dist[mxn]:
-            mxn = n
+        return mn, mc
+
+    mxn, _ = dfs(1, 1, 0)
 
     ans = 0
     queue = deque([(mxn, mxn, 0)])
