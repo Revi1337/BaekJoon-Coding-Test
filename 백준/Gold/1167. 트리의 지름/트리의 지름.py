@@ -1,37 +1,44 @@
+# 2026-04-26
+# https://www.acmicpc.net/problem/1167
+# 트리의 지름
+# tree
+
 import sys
 from collections import deque
 
 input = sys.stdin.readline
+sys.setrecursionlimit((10 ** 5) * 2)
 
 def solution(V, E):
-    graph = [[] for _ in range(V + 1)]
-    for lst in E:
-        for idx in range(1, len(lst) - 1, 2):
-            graph[lst[0]].append([lst[idx], lst[idx + 1]])
 
-    queue = deque([1])
-    check = [-1] * (V + 1)
-    far = check[1] = 1
-    while queue:
-        n = queue.popleft()
-        if check[n] > check[far]:
-            far = n
-        for nn, nc in graph[n]:
-            if check[nn] == -1:
-                check[nn] = check[n] + nc
-                queue.append(nn)
+    tree = [[] for _ in range(V + 1)]
+    for entry in E:
+        v1 = entry[0]
+        for idx in range(1, len(entry) - 1, 2):
+            v2, c = entry[idx], entry[idx + 1]
+            tree[v1].append([v2, c])
+
+    def dfs(n, pn, d):
+        dist[n] = d
+        for nn, nc in tree[n]:
+            if nn != pn:
+                dfs(nn, n, d + nc)
+
+    dist = [0] * (V + 1)
+    dfs(1, 1, 0)
+    mxn = 1
+    for n, cost in enumerate(dist[1:], start=1):
+        if cost > dist[mxn]:
+            mxn = n
 
     ans = 0
-    queue = deque([far])
-    check = [-1] * (V + 1)
-    check[far] = 0
+    queue = deque([(mxn, mxn, 0)])
     while queue:
-        n = queue.popleft()
-        ans = max(ans, check[n])
-        for nn, nc in graph[n]:
-            if check[nn] == -1:
-                check[nn] = check[n] + nc
-                queue.append(nn)
+        n, pn, cost = queue.popleft()
+        ans = max(ans, cost)
+        for nn, nc in tree[n]:
+            if nn != pn:
+                queue.append((nn, n, cost + nc))
 
     return ans
 
