@@ -1,50 +1,54 @@
+# 2026-04-25
+# https://www.acmicpc.net/problem/11437
+# LCA
+# tree
+# dfs + binary lift
+
 import sys
+import math
 
 input = sys.stdin.readline
 sys.setrecursionlimit(10 ** 6)
 
-LOG = 17
+LOG = math.ceil(math.log2(50_000))
 
 def solution(N, E, M, Q):
 
-    def build_tree(n, pn):
-        P[0][n] = pn
+    def make_tree(n, pn, d):
+        depths[n] = d
+        parents[n][0] = pn
         for nn in tree[n]:
             if nn != pn:
-                D[nn] = D[n] + 1
-                build_tree(nn, n)
+                make_tree(nn, n, d + 1)
 
-    def lca(v1, v2):
-        if D[v1] < D[v2]:
-            v1, v2 = v2, v1
-        for k in reversed(range(LOG)):
-            if P[k][v1] != -1 and D[P[k][v1]] >= D[v2]:
-                v1 = P[k][v1]
-        if v1 == v2:
-            return v1
-        for k in reversed(range(LOG)):
-            if P[k][v1] != -1 and P[k][v1] != P[k][v2]:
-                v1 = P[k][v1]
-                v2 = P[k][v2]
-        return P[0][v1]
+    def lca(n1, n2):
+        if depths[n1] > depths[n2]:                         
+            n1, n2 = n2, n1
+        for idx in range(LOG - 1, -1, -1):                  
+            if depths[n2] - depths[n1] >= (1 << idx):
+                n2 = parents[n2][idx]
+        if n1 == n2:                                        
+            return n1
+        for idx in range(LOG - 1, -1, -1):                  
+            if parents[n1][idx] != parents[n2][idx]:
+                n1, n2 = parents[n1][idx], parents[n2][idx]
+        return parents[n1][0]                               
 
     tree = [[] for _ in range(N + 1)]
     for v1, v2 in E:
         tree[v1].append(v2)
         tree[v2].append(v1)
 
-    D = [0] * (N + 1)
-    P = [[-1] * (N + 1) for _ in range(LOG)]
-    build_tree(1, -1)
+    depths = [0] * (N + 1)
+    parents = [[0] * LOG for _ in range(N + 1)]
+    make_tree(1, 1, 0)
 
-    for idx in range(1, LOG):
-        for jdx in range(1, N + 1):
-            if P[idx - 1][jdx] != -1:
-                P[idx][jdx] = P[idx - 1][P[idx - 1][jdx]]
+    for off in range(1, LOG):
+        for n in range(1, N + 1):
+            parents[n][off] = parents[parents[n][off - 1]][off - 1]
 
-    for v1, v2 in Q:
-        print(lca(v1, v2))
-
+    for n1, n2 in Q:
+        print(lca(n1, n2))
 
 N = int(input())
 E = [list(map(int, input().split())) for _ in range(N - 1)]
