@@ -1,5 +1,8 @@
-# 2025-11-21
+# 2026-04-26
 # https://www.acmicpc.net/problem/7432
+# 디스크 트리
+# tree
+# trie
 
 import sys
 
