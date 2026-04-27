@@ -6,18 +6,18 @@ import sys
 
 input = sys.stdin.readline
 
-"""upper bound (1)"""
 def solution(N, arr, M):
-    left, right = 0, max(arr) + 1
-    while left < right:
+    ans, left, right = 0, 0, max(arr)
+    while left <= right:
         mid = (left + right) // 2
         sm = sum(min(v, mid) for v in arr)
         if sm <= M:
+            ans = mid
             left = mid + 1
         else:
-            right = mid
+            right = mid - 1
 
-    return left - 1
+    return ans
 
 N = int(input())
 arr = list(map(int, input().split()))
