@@ -6,18 +6,18 @@ import sys
 
 input = sys.stdin.readline
 
-"""upper bound (1)"""
+"""upper bound (2)"""
 def solution(N, M, H):
     left, right = 0, max(H) + 1
     while left < right:
-        mid = (left + right) // 2
+        mid = (left + right + 1) // 2
         poss = sum(h - mid for h in H if h > mid)
         if poss >= M:
-            left = mid + 1
+            left = mid
         else:
-            right = mid
+            right = mid - 1
 
-    return left - 1
+    return left
 
 N, M = map(int, input().split())
 H = list(map(int, input().split()))
