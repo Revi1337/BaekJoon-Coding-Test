@@ -2,6 +2,11 @@
 # https://www.acmicpc.net/problem/2805
 # binary_search
 
+import sys
+
+input = sys.stdin.readline
+
+"""upper bound (1)"""
 def solution(N, M, H):
     left, right = 0, max(H) + 1
     while left < right:
