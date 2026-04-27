@@ -27,11 +27,10 @@ def solution(N, M, E, C):
     E.insert(0, [0, 0])
     edges = []
     for e1 in range(1, N + 1):
-        for e2 in range(1, N + 1):
-            if e1 != e2:
-                row1, col1 = E[e1]
-                row2, col2 = E[e2]
-                edges.append((e1, e2, sqrt(pow(row1 - row2, 2) + pow(col1 - col2, 2))))
+        for e2 in range(e1 + 1, N + 1):
+            row1, col1 = E[e1]
+            row2, col2 = E[e2]
+            edges.append((e1, e2, sqrt(pow(row1 - row2, 2) + pow(col1 - col2, 2))))
 
     edges.sort(key=lambda pos: pos[2])
     parents = list(range(N + 1))
@@ -39,12 +38,11 @@ def solution(N, M, E, C):
         if find(v1) != find(v2):
             union(v1, v2)
 
-    cnt = ans = 0
+    ans = 0
     for v1, v2, c in edges:
-        if v1 and v2 and find(v1) != find(v2):
+        if find(v1) != find(v2):
             union(v1, v2)
             ans += c
-            cnt += 1
 
     return "{:.2f}".format(ans)
 
