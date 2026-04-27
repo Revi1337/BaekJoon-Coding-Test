@@ -1,30 +1,26 @@
+# 2026-03-12
+# https://www.acmicpc.net/problem/2512
+# binary_search
+
 import sys
 
 input = sys.stdin.readline
 
-def solution(n, datas, max_price):
-    max_num = max(datas)
-    left, right = 1, max_num
-
-    def counter(mid):
-        counter = 0
-        for price in datas:
-            counter += min(price, mid)
-        return counter
-
-    while left <= right:
+"""upper bound (1)"""
+def solution(N, arr, M):
+    left, right = 0, max(arr) + 1
+    while left < right:
         mid = (left + right) // 2
-        cnt = counter(mid)
-        if cnt == max_price:
-            return mid
-        if cnt < max_price:
+        sm = sum(min(v, mid) for v in arr)
+        if sm <= M:
             left = mid + 1
         else:
-            right = mid - 1
+            right = mid
 
-    return right
+    return left - 1
 
-n = int(input())
-datas = list(map(int, input().split()))
-max_price = int(input())
-print(solution(n, datas, max_price))
+N = int(input())
+arr = list(map(int, input().split()))
+M = int(input())
+print(solution(N, arr, M))
+
