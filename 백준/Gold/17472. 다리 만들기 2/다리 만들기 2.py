@@ -1,10 +1,3 @@
-# 2026-04-27
-# https://www.acmicpc.net/problem/17472
-# 다리 만들기 2
-# MST
-# kruskal
-# 간선을 어떻게 만들것인가가 관건인 문제 ㅇㅇ
-
 import sys
 
 input = sys.stdin.readline
@@ -16,66 +9,72 @@ def solution(N, M, arr):
 
     inside = lambda row, col: 0 <= row < N and 0 <= col < M
 
+    def labeling():
+        nodes, carr = [], [[0] * M for _ in range(N)]
+        label = 1
+        for row in range(N):
+            for col in range(M):
+                if arr[row][col] and not carr[row][col]:
+                    stack = [[row, col]]
+                    carr[row][col] = label
+                    ns = []
+                    while stack:
+                        r, c = stack.pop()
+                        ns.append([r, c])
+                        for d in range(4):
+                            nr, nc = r + drow[d], c + dcol[d]
+                            if inside(nr, nc) and not carr[nr][nc] and arr[nr][nc] == 1:
+                                carr[nr][nc] = label
+                                stack.append([nr, nc])
+                    nodes.append(ns)
+                    label += 1
+
+        return carr, nodes, label - 1
+
+    def get_edges(nodes, carr):
+        edges = []
+        for nn in nodes:
+            label = carr[nn[0][0]][nn[0][1]]
+            for row, col in nn:
+                for d in range(4):
+                    dist, nrow, ncol = 0, row + drow[d], col + dcol[d]
+                    while inside(nrow, ncol) and arr[nrow][ncol] == 0:
+                        dist += 1
+                        nrow, ncol = nrow + drow[d], ncol + dcol[d]
+                    if inside(nrow, ncol) and arr[nrow][ncol] == 1:
+                        other = carr[nrow][ncol]
+                        if other != label and dist >= 2:
+                            edges.append([dist, label, other])
+        return edges
+
     def find(n):
-        while n != parents[n]:
-            parents[n] = parents[parents[n]]
-            n = parents[n]
-        return n
+        if parents[n] == n:
+            return n
+
+        parents[n] = find(parents[n])
+        return parents[n]
 
     def union(n1, n2):
-        r1, r2 = find(n1), find(n2)
-        if r1 == r2:
-            return False
-        if r1 < r2:
-            parents[r2] = r1
-        else:
-            parents[r1] = r2
-        return True
+        root1, root2 = find(n1), find(n2)
+        if root1 != root2:
+            parents[root2] = root1
+            return True
 
-    label, nodes, check = 1, [], [[0] * M for _ in range(N)]
-    for row in range(N):
-        for col in range(M):
-            if arr[row][col] and not check[row][col]:
-                check[row][col] = 1
-                stack = [[row, col]]
-                nn = []
-                while stack:
-                    r, c = stack.pop()
-                    nn.append([r, c])
-                    arr[r][c] = label
-                    for d in range(4):
-                        nrow, ncol = r + drow[d], c + dcol[d]
-                        if inside(nrow, ncol) and not check[nrow][ncol] and arr[nrow][ncol]:
-                            check[nrow][ncol] = 1
-                            stack.append([nrow, ncol])
-                nodes.append(nn)
-                label += 1
+        return False
 
-    E = []
-    for lst in nodes:
-        lab = arr[lst[0][0]][lst[0][1]]
-        for row, col in lst:
-            for d in range(4):
-                dist = 0
-                nrow, ncol = row + drow[d], col + dcol[d]
-                while inside(nrow, ncol) and not arr[nrow][ncol]:
-                    dist += 1
-                    nrow, ncol = nrow + drow[d], ncol + dcol[d]
-                if inside(nrow, ncol) and arr[nrow][ncol]:
-                    olab = arr[nrow][ncol]
-                    if lab != olab and dist > 1:
-                        E.append([lab, olab, dist])
+    carr, nodes, cnt = labeling()
+    edges = get_edges(nodes, carr)
+    parents = list(range(cnt + 1))
 
-    parents = list(range(label))
-    E.sort(key=lambda x: x[2])
+    edges.sort()
     ans = 0
-    for n1, n2, c in E:
+    for c, n1, n2 in edges:
         if union(n1, n2):
             ans += c
 
-    tmp_root = find(1)
-    for n in range(1, label):
-        if find(n) != tmp_root:
+    root = find(1)
+    for n in range(1, cnt + 1):
+        if find(n) != root:
             return -1
 
     return ans
